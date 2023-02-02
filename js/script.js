@@ -272,6 +272,34 @@ window.addEventListener('DOMContentLoaded', () => {
    
 
 
+    // handing cards
+
+    const checkBtn = document.querySelector('#check');
+
+    function handAdditionalCard() {
+        const hiddenCard = document.querySelectorAll('[data-card]');
+
+        hiddenCard.forEach((card, i) => {
+            const container = card.querySelector('.card__container');
+            if (i == 0) {
+                card.classList.add('card__appear');
+                card.classList.remove('card__hidden_4');
+                container.style.display = 'block';
+            } else {
+                const time = setTimeout(()=> {
+                    card.classList.add('card__appear');
+                    card.classList.remove('card__hidden_5');
+                    container.style.display = 'block';
+                }, 1000);
+            }
+        });
+    }
+    
+
+    checkBtn.addEventListener('click', handAdditionalCard);
+
+
+
 
     
 

@@ -78,6 +78,25 @@
     border: 1px solid rgba(63, 60, 60, 0.568);
 }
 
+.card__hidden_4 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-675px, -108px);
+}
+
+.card__hidden_5 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-775px, -108px);
+}
+
+.card__appear {
+    transform: translate(0);
+    transition: 0.8s all;
+}
+
+.card__container {
+    display: none;
+}
+
 .card__wrapper0 {
     position: relative;
     left: -3.1px;
@@ -209,13 +228,14 @@ button {
     width: 100px;
     font-family: 'Coiny', cursive;
     font-size: 16px;
+    line-height: 60px;
     border-radius: 25px;
     border: 2px solid rgb(27, 27, 54);
     color: rgb(255, 255, 255);
     transition: 0.6s ease;
     cursor: pointer;
     text-transform: uppercase;
-    opacity: 0.8;
+
     
 }
 
