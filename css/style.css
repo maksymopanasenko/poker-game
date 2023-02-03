@@ -78,19 +78,58 @@
     border: 1px solid rgba(63, 60, 60, 0.568);
 }
 
+.card__appear {
+    transform: translate(0);
+    transition: 0.8s all;
+}
+
+.card__left {
+    transform: rotate(-15deg) translate(7px, 0px);
+}
+.card__right {
+    transform: rotate(15deg) translate(-7px, 0px);
+}
+
+.card__hidden__player_1 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-540px, 102px);
+}
+
+.card__hidden__player_2 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-601px, 102px);
+}
+
+.card__hidden__player_3 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-540px, -318px);
+}
+.card__hidden__player_4 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-601px, -318px);
+}
+
+.card__hidden_1 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-370px, -108px);
+}
+.card__hidden_2 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-470px, -108px);
+}
+.card__hidden_3 {
+    background: url('../img/side.png') center center/cover no-repeat;
+    transform: translate(-570px, -108px);
+}
+
 .card__hidden_4 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-675px, -108px);
+    transform: translate(-670px, -108px);
 }
 
 .card__hidden_5 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-775px, -108px);
-}
-
-.card__appear {
-    transform: translate(0);
-    transition: 0.8s all;
+    transform: translate(-770px, -108px);
 }
 
 .card__container {
@@ -150,6 +189,7 @@
     align-items: center;
 }
 
+
 .middle__cards {
     /* background: chartreuse; */
     height: 300px;
@@ -167,10 +207,7 @@
 
 
 .slot {
-    width: 200px;
     display: flex;
-    justify-content: space-around;
-    align-items: center;
 }
 
 .slot__middle {
@@ -180,12 +217,6 @@
     align-items: center;
 }
 
-.slot__my {
-    width: 200px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
 
 
 

@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
           digitRight = document.querySelectorAll('.digit__right'),
           img = document.querySelectorAll('img'),
           start = document.querySelector('button'),
-          parent = document.querySelectorAll('.card');
+          parent = document.querySelectorAll('.card__container');
 
 
     const digits = [];
@@ -58,13 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
     executeCardForming();
     
     
-
-    start.addEventListener('click', () => {
-       
-
-        executeCardForming();
-        // console.log(digits);
-    });
+    start.addEventListener('click', handCardsToPlayers);
 
 
     
@@ -137,10 +131,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function checkSuit(suitArr, sortedArr, suitName) {
         suitArr.length = 0;
-        for (let i of j) {
-            for (let x = 0; x < i.length; x++) {
-                if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == `img/${suitName}.png`) {
-                    suitArr.push(i[0].textContent);
+        for (let key of j) {
+            for (let x = 0; x < key.length; x++) {
+                if (key[0].getAttribute('class') == 'digit__left' && key[1].getAttribute('src') == `img/${suitName}.png`) {
+                    suitArr.push(key[0].textContent);
                     break;
                 }
             }
@@ -158,8 +152,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             }
         }
+
     }
-   
 
 
     // handing cards
@@ -171,25 +165,65 @@ window.addEventListener('DOMContentLoaded', () => {
 
         hiddenCard.forEach((card, i) => {
             const container = card.querySelector('.card__container');
-            if (i == 0) {
-                card.classList.add('card__appear');
-                card.classList.remove('card__hidden_4');
-                container.style.display = 'block';
-            } else {
-                const time = setTimeout(()=> {
-                    card.classList.add('card__appear');
-                    card.classList.remove('card__hidden_5');
-                    container.style.display = 'block';
-                }, 1000);
+            
+            switch (i) {
+                case 0:
+                    showCardContents(container, card, 4);
+                case 1:
+                    const time = setTimeout(()=> showCardContents(container, card, 5), 500);
             }
         });
     }
     
 
     checkBtn.addEventListener('click', handAdditionalCard);
+    
 
+    function handStartSet() {
+        const hiddenCard = document.querySelectorAll('[data-first]');
 
+        hiddenCard.forEach((card, i) => {
+            const container = card.querySelector('.card__container');
 
+            switch (i) {
+                case 0:
+                    showCardContents(container, card, 1);
+                case 1:
+                    const time = setTimeout(()=> showCardContents(container, card, 2), 500);
+                case 2:
+                    const time1 = setTimeout(()=> showCardContents(container, card, 3), 1000);
+            }
+        });
+    }
+
+    function handCardsToPlayers() {
+        const hiddenCard = document.querySelectorAll('[data-player]');
+
+        hiddenCard.forEach((card, i) => {
+            const container = card.querySelector('.card__container');
+            
+            switch (i) {
+                case 0:
+                    showCardContents(container, card, '_player_1');
+                case 1:
+                    const time = setTimeout(()=> showCardContents(container, card, '_player_2'), 500);
+                case 2:
+                    showCardContents(container, card, '_player_3');
+                case 3:
+                    const time1 = setTimeout(()=> showCardContents(container, card, '_player_4'), 500);
+                default:
+                    const time2 = setTimeout(()=> handStartSet(), 1000); 
+            }
+        });
+    }
+
+    function showCardContents(container, card, classElemNum) {
+        card.classList.add('card__appear');
+        card.classList.remove(`card__hidden_${classElemNum}`);
+        container.style.display = 'block';
+    }
+
+    
 
     
 
