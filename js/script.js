@@ -1,6 +1,5 @@
 "use strict";
 
-
 window.addEventListener('DOMContentLoaded', () => {
 
     const digitLeft = document.querySelectorAll('.digit__left'),
@@ -31,11 +30,11 @@ window.addEventListener('DOMContentLoaded', () => {
         12: 'A'
     };
 
-    const imgMast = {
-        0: 'img/treff.png',
-        1: 'img/bubn.png',
-        2: 'img/cherv.png',
-        3: 'img/pika.png'
+    const cardImgBySuit = {
+        0: 'img/clubs.png',
+        1: 'img/diamonds.png',
+        2: 'img/hearts.png',
+        3: 'img/spades.png'
     };
 
     let j = [];
@@ -45,10 +44,10 @@ window.addEventListener('DOMContentLoaded', () => {
     
     });
 
-    const treff = [],
-          bubna = [],
-          cherv = [],
-          pika = [];
+    const clubs = [],
+          diamonds = [],
+          hearts = [],
+          spades = [];
     
     
 
@@ -56,33 +55,33 @@ window.addEventListener('DOMContentLoaded', () => {
     // constants, lets !!!!!!!!!!!!!!!!!!
 
 
-    xxx();
+    executeCardForming();
     
     
 
     start.addEventListener('click', () => {
        
 
-        xxx();
+        executeCardForming();
         // console.log(digits);
     });
 
 
     
     
-    function xxx() {
+    function executeCardForming() {
 
         digits.length = 0;
         int = 0;
 
         digitLeft.forEach((i) => {
-            const counter = setNum(Object.keys(mast).length);
+            const counter = getNum(Object.keys(mast).length);
             i.textContent = mast[counter];
             digits.push(i.textContent);
         });
 
         equalsDigits();
-        setMast();
+        setSuit();
 
         const tempArray = [...digits].sort();
 
@@ -91,13 +90,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 
                 console.log(`${tempArray[i]} found number`);
                 digits.length = 0;
-                xxx();
+                executeCardForming();
                 
             }
         }
 
   
-        collection();
+        getherCollection();
     }
 
     function equalsDigits() {
@@ -107,164 +106,55 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function setMast() {
-        img.forEach((i) => {
-            const a = setNum(Object.keys(imgMast).length);
-            i.setAttribute('src', imgMast[a]);  
+    function setSuit() {
+        img.forEach((item) => {
+            const a = getNum(Object.keys(cardImgBySuit).length);
+            item.setAttribute('src', cardImgBySuit[a]);  
                 
         });
     }
 
-    function setNum(q) {
+
+    function getNum(q) {
         return Math.floor(Math.random()*q);
     }
 
-
-
-
-    function collection() {
-        checkTreff();
-        checkBubna();
-        checkCherv();
-        checkPika();
-    }
-
-    // function checkAll() {  
-    //     treff.length = 0;    
-    //     for (let i of j) {
-    //         for (let x = 0; x < i.length; x++) {
-                
-    //             if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == 'img/treff.png') {
-    //                 treff.push(i[0].textContent);
-                    
-    //                 break;
-    //             } 
-    //         }  
-    //     }
-
-    //     const sortedTreff = [...treff].sort();
-        
-    //     for (let i = 0; i < sortedTreff.length; i++) {
-    //         if (sortedTreff[i + 1] === sortedTreff[i]) {
-    //             console.log(`!!!!!!!!!!!!!!!  ${treff.length}`);
-    //             console.log(`${sortedTreff[i]} found treff`);
-    //             treff.length = 0;
-    //             setMast();
-    //             collection();
-    //             break;
-    //         }
-    //     }
-    // }
-
-
-    function checkTreff() {  
-        
-        treff.length = 0;    
-        for (let i of j) {
-            for (let x = 0; x < i.length; x++) {
-                
-                if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == 'img/treff.png') {
-                    treff.push(i[0].textContent);
-                    
-                    break;
-                } 
-            }  
-        }
-
-        const sortedTreff = [...treff].sort();
-        
-        for (let i = 0; i < sortedTreff.length; i++) {
-            if (sortedTreff[i + 1] === sortedTreff[i]) {
-                // console.log(`!!!!!!!!!!!!!!!  ${treff.length}`);
-                console.log(`${sortedTreff[i]} found treff`);
-                treff.length = 0;
-                setMast();
-                collection();
-                break;
-            }
-        }
-    }
-    
     
 
-    // bubna
-    function checkBubna() {
-        bubna.length = 0;
-        for (let i of j) {
-            for (let x = 0; x < i.length; x++) {
-                if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == 'img/bubn.png') {
-                    bubna.push(i[0].textContent);
-                    break;
-                }
-            } 
-        }
-        
-        const sortedBubna = [...bubna].sort();
-        
-        for (let i = 0; i < sortedBubna.length; i++) {
-            if (sortedBubna[i + 1] === sortedBubna[i]) {
+    function getherCollection() {
+        let sortedSpades,
+            sortedDiamonds,
+            sortedHearts,
+            sortedClubs;
 
-                console.log(`${sortedBubna[i]} found bubna`);
-                bubna.length = 0;
-                setMast();
-                collection();
-                break;
-            }
-        }
-    }
-    
-    
-
-
-    // chyrva
-
-    function checkCherv() {
-        cherv.length = 0;
-        for (let i of j) {
-            for (let x = 0; x < i.length; x++) {
-                if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == 'img/cherv.png') {
-                    cherv.push(i[0].textContent);
-                    break;
-                }
-            }   
-        }
-
-        const sortedCherv = [...cherv].sort();
-        
-        for (let i = 0; i < sortedCherv.length; i++) {
-            if (sortedCherv[i + 1] === sortedCherv[i]) {
-
-                console.log(`${sortedCherv[i]} found cherv`);
-                cherv.length = 0;
-                setMast();
-                collection();
-                break;
-            }
-        }
+        checkSuit(clubs, sortedClubs, 'clubs');
+        checkSuit(diamonds, sortedDiamonds, 'diamonds');
+        checkSuit(hearts, sortedHearts, 'hearts');
+        checkSuit(spades, sortedSpades, 'spades');
     }
 
+    
 
-    //pika
-    function checkPika() {
-        pika.length = 0;
+    function checkSuit(suitArr, sortedArr, suitName) {
+        suitArr.length = 0;
         for (let i of j) {
             for (let x = 0; x < i.length; x++) {
-                if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == 'img/pika.png') {
-                    pika.push(i[0].textContent);
+                if (i[0].getAttribute('class') == 'digit__left' && i[1].getAttribute('src') == `img/${suitName}.png`) {
+                    suitArr.push(i[0].textContent);
                     break;
                 }
             }
         }
 
-        const sortedPika = [...pika].sort();
+        sortedArr = [...suitArr].sort();
         
-        for (let i = 0; i < sortedPika.length; i++) {
-            if (sortedPika[i + 1] === sortedPika[i]) {
+        for (let i = 0; i < sortedArr.length; i++) {
+            if (sortedArr[i + 1] === sortedArr[i]) {
 
-                console.log(`${sortedPika[i]} found pika`);
-                pika.length = 0;
-                setMast();
-                collection();
+                console.log(`${sortedArr[i]} found ${suitName}`);
+                suitArr.length = 0;
+                setSuit();
+                getherCollection();
                 break;
             }
         }
