@@ -10,9 +10,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     const digits = [];
-    
-
-    let int = 0;
 
     const mast = {
         0: '2',
@@ -37,10 +34,13 @@ window.addEventListener('DOMContentLoaded', () => {
         3: 'img/spades.png'
     };
 
-    let j = [];
+    let cardInnerElements = [],
+        int = 0;
+
+
 
     parent.forEach((i) => {
-        j.push(i.children);
+        cardInnerElements.push(i.children);
     
     });
 
@@ -131,7 +131,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function checkSuit(suitArr, sortedArr, suitName) {
         suitArr.length = 0;
-        for (let key of j) {
+        for (let key of cardInnerElements) {
             for (let x = 0; x < key.length; x++) {
                 if (key[0].getAttribute('class') == 'digit__left' && key[1].getAttribute('src') == `img/${suitName}.png`) {
                     suitArr.push(key[0].textContent);
@@ -158,10 +158,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // handing cards
 
-    const checkBtn = document.querySelector('#check');
+    const checkBtn = document.querySelector('#check'),
+          raiseBtn = document.querySelector('#raise'),
+          restartBtn = document.getElementById('fald');
+
+
+
+    raiseBtn.addEventListener('click', handAdditional);
+    checkBtn.addEventListener('click', handAdditionalCard);
 
     function handAdditionalCard() {
-        const hiddenCard = document.querySelectorAll('[data-card]');
+        const hiddenCard = document.querySelectorAll('.card__last');
 
         hiddenCard.forEach((card, i) => {
             const container = card.querySelector('.card__container');
@@ -174,9 +181,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
 
-    checkBtn.addEventListener('click', handAdditionalCard);
     
 
     function handStartSet() {
@@ -194,6 +199,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     const time1 = setTimeout(()=> showCardContents(container, card, 3), 1000);
             }
         });
+
+        checkBtn.removeAttribute('disabled');
+        raiseBtn.removeAttribute('disabled');
+        
     }
 
     function handCardsToPlayers() {
@@ -201,7 +210,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         hiddenCard.forEach((card, i) => {
             const container = card.querySelector('.card__container');
-            
+
             switch (i) {
                 case 0:
                     showCardContents(container, card, '_player_1');
@@ -217,15 +226,31 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+
+    // +1 card
+    let counter = 4;
+    function handAdditional() {
+        const hiddenCard = document.querySelectorAll('.card__last');
+        
+        hiddenCard.forEach((card, i) => {
+
+            if (i == 0) {
+                const container = card.querySelector('.card__container');
+                showCardContents(container, card, counter);
+                card.classList.remove('card__last');
+                counter++;
+            } else {
+                return;
+            }
+        });
+    }
+
+
     function showCardContents(container, card, classElemNum) {
         card.classList.add('card__appear');
         card.classList.remove(`card__hidden_${classElemNum}`);
         container.style.display = 'block';
     }
-
-    
-
-    
 
 
     

@@ -92,44 +92,53 @@
 
 .card__hidden__player_1 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-540px, 102px);
+    transform: translate(-543px, 102px);
+    box-shadow: none;
 }
 
 .card__hidden__player_2 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-601px, 102px);
+    transform: translate(-604px, 102px);
+    box-shadow: none;
 }
 
 .card__hidden__player_3 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-540px, -318px);
+    transform: translate(-543px, -318px);
+    box-shadow: none;
 }
 .card__hidden__player_4 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-601px, -318px);
+    transform: translate(-604px, -318px);
+    box-shadow: none;
 }
 
 .card__hidden_1 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-370px, -108px);
+    transform: translate(-373px, -108px);
+    box-shadow: none;
 }
 .card__hidden_2 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-470px, -108px);
+    transform: translate(-473px, -108px);
+    box-shadow: none;
 }
 .card__hidden_3 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-570px, -108px);
+    transform: translate(-573px, -108px);
+    box-shadow: none;
 }
 
 .card__hidden_4 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-670px, -108px);
+    transform: translate(-675px, -108px);
+    box-shadow: none;
 }
 
 .card__hidden_5 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-770px, -108px);
+    transform: translate(-775px, -108px);
+    box-shadow: none;
 }
 
 .card__container {
@@ -138,11 +147,12 @@
 
 .card__wrapper0 {
     position: relative;
-    left: -3.1px;
+    left: -3px;
     top: 0.5px;
     box-shadow: none;
     background: url('../img/side.png') no-repeat;
     background-size: cover;
+    z-index: 10;
     background-position: center;
 }
 
