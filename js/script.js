@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const digitLeft = document.querySelectorAll('.digit__left'),
           digitRight = document.querySelectorAll('.digit__right'),
-          img = document.querySelectorAll('img'),
+          img = document.querySelectorAll('.card img'),
           start = document.querySelector('button'),
           parent = document.querySelectorAll('.card__container');
 
@@ -196,13 +196,17 @@ window.addEventListener('DOMContentLoaded', () => {
                 case 1:
                     const time = setTimeout(()=> showCardContents(container, card, 2), 500);
                 case 2:
-                    const time1 = setTimeout(()=> showCardContents(container, card, 3), 1000);
+                    const time1 = setTimeout(()=> {
+                        showCardContents(container, card, 3);
+                        removeAttr();
+                    }, 1000);
             }
-        });
+        });      
+    }
 
+    function removeAttr() {
         checkBtn.removeAttribute('disabled');
         raiseBtn.removeAttribute('disabled');
-        
     }
 
     function handCardsToPlayers() {
@@ -252,6 +256,12 @@ window.addEventListener('DOMContentLoaded', () => {
         container.style.display = 'block';
     }
 
+
+    // change img in hints
+
+    const emoji = document.querySelector('.hint-img');
+    let numOfEmoji = Math.floor(Math.random()*10);
+    emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
 
     
     
