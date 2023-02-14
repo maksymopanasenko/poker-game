@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const digitLeft = document.querySelectorAll('.digit__left'),
           digitRight = document.querySelectorAll('.digit__right'),
           img = document.querySelectorAll('.card img'),
-          start = document.querySelector('button'),
+          start = document.querySelector('.user-btn'),
           parent = document.querySelectorAll('.card__container');
 
 
@@ -262,6 +262,18 @@ window.addEventListener('DOMContentLoaded', () => {
     const emoji = document.querySelector('.hint-img');
     let numOfEmoji = Math.floor(Math.random()*10);
     emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
+
+
+    // close the modal
+
+    const closeModalBtn = document.querySelector('.start_game'),
+          modalOverlay = document.querySelector('.overlay');
+
+    closeModalBtn.addEventListener('click', () => {
+        modalOverlay.style.display = 'none';
+    });
+
+
 
     
     
