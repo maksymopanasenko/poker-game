@@ -264,14 +264,43 @@ window.addEventListener('DOMContentLoaded', () => {
     emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
 
 
-    // close the modal
+    // start tutorial
 
     const closeModalBtn = document.querySelector('.start_game'),
-          modalOverlay = document.querySelector('.overlay');
+          text = document.querySelector('.greating_text'),
+          overlay = document.querySelector('.overlay'),
+          hints = document.querySelector('.hints');
 
-    closeModalBtn.addEventListener('click', () => {
-        modalOverlay.style.display = 'none';
+    closeModalBtn.addEventListener('click', (e) => {
+        const target = e.target;
+        console.log(e.target);
+        if (target.classList.contains('start')) {
+            text.innerText = 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia fugiat asperiores laudantium esse iure doloremque veritatis explicabo nostrum a reprehenderit labore maiores repellendus consequatur, minima et animi expedita eius optio!';
+            target.classList.remove('start');
+            target.innerText = 'Skip all';
+            highlight();
+            addElementToDOM('.buttons_wrapper', 'button', 'start_game', 'Next');
+        } else {
+            overlay.style.display = 'none';
+            hints.classList.remove('hints_styled');
+        }
     });
+
+
+    function addElementToDOM(parent, element, className, title) {
+        const elemParent = document.querySelector(parent);
+        
+        const newElem = document.createElement(element);
+        newElem.classList.add(className);
+        newElem.innerText = title;
+        elemParent.prepend(newElem);
+    }
+
+    function highlight() {
+        hints.classList.add('hints_styled');
+    }
+
+
 
 
 
