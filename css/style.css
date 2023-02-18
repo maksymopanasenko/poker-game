@@ -60,6 +60,7 @@
     top: 150px;
 }
 
+
 .buttons_wrapper {
     display: flex;
     width: 240px;
@@ -67,7 +68,7 @@
     margin-left: 100px;
 }
 
-.start_game {
+.tutorial_btn {
     display: block;
     width: 100px;
     height: 50px;
@@ -78,6 +79,24 @@
     font-weight: 700;
     color: #fff;
     margin: 0 10px;
+}
+
+.title_input {
+    margin: 20px auto 0 auto;
+    text-align: center;
+}
+
+.user_input {
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 30px auto;
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.close {
+    margin: 0 auto;
 }
 
 .back__space {
@@ -104,8 +123,16 @@
     height: 700px;
 }
 
-.buttons__wrapper {
+.wrapper__btn {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 380px;
+    height: 70px;
+}
+
+.buttons__wrapper {
+    display: none;
     justify-content: space-around;
     align-items: center;
     width: 380px;
@@ -135,9 +162,28 @@
 .inner_card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 400px;
+    justify-content: space-around;
+    height: 700px;
 }
+
+.player__chips {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player__chips img {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 15px;
+}
+
+.player_name {
+    color: #fff;
+}
+
+
 
 .card {
     display: flex;
@@ -165,53 +211,62 @@
 
 .card__hidden__player_1 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-543px, 102px);
+    transform: translate(-546px, 192px);
     box-shadow: none;
+    z-index: -1;
 }
 
 .card__hidden__player_2 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-604px, 102px);
+    transform: translate(-606px, 192px);
     box-shadow: none;
+    z-index: -1;
 }
 
 .card__hidden__player_3 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-543px, -318px);
+    transform: translate(-546px, -228px);
     box-shadow: none;
+    z-index: -1;
 }
 .card__hidden__player_4 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-604px, -318px);
+    transform: translate(-606px, -228px);
     box-shadow: none;
+    z-index: -1;
 }
 
 .card__hidden_1 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-373px, -108px);
+    transform: translate(-373px, -20px);
     box-shadow: none;
+    z-index: -1;
 }
 .card__hidden_2 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-473px, -108px);
+    transform: translate(-473px, -20px);
     box-shadow: none;
+    z-index: -1;
 }
 .card__hidden_3 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-573px, -108px);
+    transform: translate(-575px, -20px);
     box-shadow: none;
+    z-index: -1;
 }
 
 .card__hidden_4 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-675px, -108px);
+    transform: translate(-675px, -20px);
     box-shadow: none;
+    z-index: -1;
 }
 
 .card__hidden_5 {
     background: url('../img/side.png') center center/cover no-repeat;
-    transform: translate(-775px, -108px);
+    transform: translate(-775px, -20px);
     box-shadow: none;
+    z-index: -1;
 }
 
 .card__container {
@@ -252,7 +307,6 @@
     border: 1px solid rgba(63, 60, 60, 0.568);
 }
 .card__wrapper3 {
-    position: absolute;
     width: 60px;
     height: 80px;
     background: cornsilk;

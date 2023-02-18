@@ -18,7 +18,7 @@
                 </div>
                 <img src="img/emoji/emoji2.png" alt="me_in_persone" class="my_persone">
                 <div class="buttons_wrapper">
-                    <button class="start_game start">Go ahead!</button>
+                    <button class="tutorial_btn start">Go ahead!</button>
                 </div>
             </div>
         </div>
@@ -27,6 +27,12 @@
     <div class="back__space">
         <div class="front__space">
             <div class="inner_card">
+                <div class="player__chips">
+                    <img src="img/chips-black.png" alt="chips">
+                    <div class="player_name">
+                        Computer: <span class="count">1000</span>
+                    </div>
+                </div>
                 <div class="card__fild">
                     <div class="card__wrapper3">
                         <div class="card__wrapper2">
@@ -36,9 +42,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn__wrapper">
-                    <div class="start__btn">
-                        <button class="user-btn">start</button>
+                <div class="player__chips">
+                    <img src="img/chips-red.png" alt="chips">
+                    <div class="player_name">
+                        <span class="user_name">Player</span>: <span class="count">1000</span>
                     </div>
                 </div>
             </div>
@@ -122,6 +129,11 @@
                             </div>
                     </div> 
                 </div>
+                <div class="wrapper__btn">
+                    <div class="start__btn">
+                        <button class="user-btn">start</button>
+                    </div>
+                </div>
                 <div class="buttons__wrapper">
                     <button class="user-btn" id="fald">Fald</button>
                     <button class="user-btn" id="raise" disabled>Raise</button>
@@ -148,7 +160,7 @@
                      <th scope="col">Games</th>
                     </tr>
                     <tr>
-                     <th scope="row" class="player">You</th>
+                     <th scope="row" class="player">Player</th>
                      <td>0</td>
                      <td>0</td>
                      <td>0</td>

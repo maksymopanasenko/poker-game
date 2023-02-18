@@ -210,7 +210,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function handCardsToPlayers() {
-        const hiddenCard = document.querySelectorAll('[data-player]');
+        const hiddenCard = document.querySelectorAll('[data-player]'),
+              gameBtns = document.querySelector('.buttons__wrapper'),
+              startBtnWrapper = document.querySelector('.wrapper__btn');
 
         hiddenCard.forEach((card, i) => {
             const container = card.querySelector('.card__container');
@@ -228,6 +230,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     const time2 = setTimeout(()=> handStartSet(), 1000); 
             }
         });
+        gameBtns.style.display = 'flex';
+        startBtnWrapper.style.display = 'none';
     }
 
 
@@ -266,32 +270,53 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // start tutorial
 
-    const closeModalBtn = document.querySelector('.start_game'),
-          text = document.querySelector('.greating_text'),
+    const text = document.querySelector('.greating_text'),
           overlay = document.querySelector('.overlay'),
+          modalContent = overlay.querySelector('.modal_content'),
           hints = document.querySelector('.hints');
 
-    closeModalBtn.addEventListener('click', (e) => {
+    let userName;
+
+    modalContent.addEventListener('click', (e) => {
+
         const target = e.target;
-        console.log(e.target);
-        if (target.classList.contains('start')) {
-            text.innerText = 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia fugiat asperiores laudantium esse iure doloremque veritatis explicabo nostrum a reprehenderit labore maiores repellendus consequatur, minima et animi expedita eius optio!';
-            target.classList.remove('start');
-            target.innerText = 'Skip all';
-            highlight();
-            addElementToDOM('.buttons_wrapper', 'button', 'start_game', 'Next');
-        } else {
-            overlay.style.display = 'none';
-            hints.classList.remove('hints_styled');
+        if (target.nodeName == "BUTTON" && target.className != 'tutorial_btn next') {
+
+            if (target.classList.contains('start')) {
+                text.innerText = 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officia fugiat asperiores laudantium esse iure doloremque veritatis explicabo nostrum a reprehenderit labore maiores repellendus consequatur, minima et animi expedita eius optio!';
+                target.classList.remove('start');
+                target.innerText = 'Skip all';
+                highlight();
+                addElementToDOM('.buttons_wrapper', 'button', 'tutorial_btn', 'next', 'Next');
+            } else if (target.classList.contains('close')) {
+                if (!userName) {
+                    return
+                } else {
+                    overlay.style.display = 'none';
+                    document.querySelector('.player').innerText = userName;
+                    document.querySelector('.user_name').innerText = userName;
+                }
+            } else {
+                hints.classList.remove('hints_styled');
+                modalContent.innerHTML = '';
+                modalContent.append(changeContent());
+                const dataText = document.querySelector('.user_input');
+                console.log(dataText);
+                dataText.addEventListener('input', () => {
+                    userName = dataText.value;
+                });                           
+            }
         }
     });
 
+     
 
-    function addElementToDOM(parent, element, className, title) {
+
+    function addElementToDOM(parent, element, className1, className2, title) {
         const elemParent = document.querySelector(parent);
         
         const newElem = document.createElement(element);
-        newElem.classList.add(className);
+        newElem.classList.add(className1, className2);
         newElem.innerText = title;
         elemParent.prepend(newElem);
     }
@@ -299,6 +324,23 @@ window.addEventListener('DOMContentLoaded', () => {
     function highlight() {
         hints.classList.add('hints_styled');
     }
+
+    function changeContent() {
+        const elem = document.createElement('div');
+
+        // elem.classList.add('wrapper_input');
+
+        elem.innerHTML = `
+            <h2 class="title_input">Enter your name</h2>
+            <input type="text" class="user_input">
+            <button class="tutorial_btn close">Save</button>
+        `;
+
+        return elem;
+    }
+
+
+    
 
 
 
