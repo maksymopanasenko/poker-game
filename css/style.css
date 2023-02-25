@@ -507,7 +507,7 @@ td {
     border: 2px solid rgb(65, 45, 6);
 }
 
-.hints_styled {
+.styled {
     z-index: 101; 
     position: relative;
     box-shadow: 0 0 30px rgb(255, 255, 255);
