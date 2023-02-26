@@ -162,7 +162,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const checkBtn = document.querySelector('#check'),
           raiseBtn = document.querySelector('#raise'),
-          restartBtn = document.getElementById('fold');
+          foldBtn = document.querySelector('#fold');
 
 
 
@@ -209,6 +209,13 @@ window.addEventListener('DOMContentLoaded', () => {
     function removeAttr() {
         checkBtn.removeAttribute('disabled');
         raiseBtn.removeAttribute('disabled');
+        foldBtn.removeAttribute('disabled');
+    }
+
+    function addAttr() {
+        checkBtn.setAttribute('disabled', '');
+        raiseBtn.setAttribute('disabled', '');
+        foldBtn.setAttribute('disabled', '');
     }
 
     function handCardsToPlayers() {
@@ -239,17 +246,18 @@ window.addEventListener('DOMContentLoaded', () => {
     // +1 card
 
 
+    let counterAdditionalCard = 6;
 
     function handAdditionalCard() {
-        let counter = 6;
         const hiddenCard = document.querySelectorAll('.card__last');
-        
+
         hiddenCard.forEach((card, i) => {
 
             if (i == 0) {
                 const container = card.querySelector('.card__container');
-                showCardContents(container, card, counter);
-                counter++;
+                showCardContents(container, card, counterAdditionalCard);
+                card.classList.remove('card__last');
+                counterAdditionalCard++;
             } else {
                 return;
             }
@@ -389,7 +397,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // restart 
 
-    const foldBtn = document.querySelector('#fold');
     const allCards = document.querySelectorAll('.card');
 
     foldBtn.addEventListener('click', () => {
@@ -404,15 +411,23 @@ window.addEventListener('DOMContentLoaded', () => {
         overlay.style.display = 'block';
 
         const reloadBtn = document.querySelector('.reload');
+        
 
         reloadBtn.addEventListener('click', () => {
             overlay.style.display = 'none';
             startBtnWrapper.style.display = 'flex';
             gameBtns.style.display = 'none';
+            addAttr();
             executeCardForming();
             allCards.forEach((card, i) => {
                 card.classList.remove('card__appear');
                 card.classList.add(`card__hidden_${i}`)
+            });
+
+            const lastCards = document.querySelectorAll('[data-class]');
+            lastCards.forEach(card => {
+                card.classList.add('card__last');
+                counterAdditionalCard = 6;
             });
         });
     });
