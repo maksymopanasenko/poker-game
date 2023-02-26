@@ -5,7 +5,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const digitLeft = document.querySelectorAll('.digit__left'),
           digitRight = document.querySelectorAll('.digit__right'),
           img = document.querySelectorAll('.card img'),
-          start = document.querySelector('.user-btn'),
+          startBtn = document.querySelector('.user-btn'),
+          startBtnWrapper = document.querySelector('.wrapper__btn'),
+          gameBtns = document.querySelector('.buttons__wrapper'),
           parent = document.querySelectorAll('.card__container');
 
 
@@ -58,7 +60,7 @@ window.addEventListener('DOMContentLoaded', () => {
     executeCardForming();
     
     
-    start.addEventListener('click', handCardsToPlayers);
+    startBtn.addEventListener('click', handCardsToPlayers);
 
 
     
@@ -160,14 +162,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const checkBtn = document.querySelector('#check'),
           raiseBtn = document.querySelector('#raise'),
-          restartBtn = document.getElementById('fald');
+          restartBtn = document.getElementById('fold');
 
 
 
-    raiseBtn.addEventListener('click', handAdditional);
-    checkBtn.addEventListener('click', handAdditionalCard);
+    raiseBtn.addEventListener('click', handAdditionalCard);
+    checkBtn.addEventListener('click', handRestCards);
 
-    function handAdditionalCard() {
+    function handRestCards() {
         const hiddenCard = document.querySelectorAll('.card__last');
 
         hiddenCard.forEach((card, i) => {
@@ -175,9 +177,9 @@ window.addEventListener('DOMContentLoaded', () => {
             
             switch (i) {
                 case 0:
-                    showCardContents(container, card, 4);
+                    showCardContents(container, card, 6);
                 case 1:
-                    const time = setTimeout(()=> showCardContents(container, card, 5), 500);
+                    const time = setTimeout(()=> showCardContents(container, card, 7), 500);
             }
         });
     }
@@ -192,12 +194,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
             switch (i) {
                 case 0:
-                    showCardContents(container, card, 1);
+                    showCardContents(container, card, 3);
                 case 1:
-                    const time = setTimeout(()=> showCardContents(container, card, 2), 500);
+                    const time = setTimeout(()=> showCardContents(container, card, 4), 500);
                 case 2:
                     const time1 = setTimeout(()=> {
-                        showCardContents(container, card, 3);
+                        showCardContents(container, card, 5);
                         removeAttr();
                     }, 1000);
             }
@@ -210,22 +212,21 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function handCardsToPlayers() {
-        const hiddenCard = document.querySelectorAll('[data-player]'),
-              gameBtns = document.querySelector('.buttons__wrapper'),
-              startBtnWrapper = document.querySelector('.wrapper__btn');
+        const hiddenCard = document.querySelectorAll('[data-player]');
+              
 
         hiddenCard.forEach((card, i) => {
             const container = card.querySelector('.card__container');
 
             switch (i) {
                 case 0:
-                    showCardContents(container, card, '_player_1');
+                    showCardContents(container, card, 1);
                 case 1:
-                    const time = setTimeout(()=> showCardContents(container, card, '_player_2'), 500);
+                    const time = setTimeout(()=> showCardContents(container, card, 2), 500);
                 case 2:
-                    showCardContents(container, card, '_player_3');
+                    showCardContents(container, card, 8);
                 case 3:
-                    const time1 = setTimeout(()=> showCardContents(container, card, '_player_4'), 500);
+                    const time1 = setTimeout(()=> showCardContents(container, card, 9), 500);
                 default:
                     const time2 = setTimeout(()=> handStartSet(), 1000); 
             }
@@ -236,8 +237,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     // +1 card
-    let counter = 4;
-    function handAdditional() {
+
+
+
+    function handAdditionalCard() {
+        let counter = 6;
         const hiddenCard = document.querySelectorAll('.card__last');
         
         hiddenCard.forEach((card, i) => {
@@ -245,7 +249,6 @@ window.addEventListener('DOMContentLoaded', () => {
             if (i == 0) {
                 const container = card.querySelector('.card__container');
                 showCardContents(container, card, counter);
-                card.classList.remove('card__last');
                 counter++;
             } else {
                 return;
@@ -253,6 +256,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    //
 
     function showCardContents(container, card, classElemNum) {
         card.classList.add('card__appear');
@@ -299,20 +303,27 @@ window.addEventListener('DOMContentLoaded', () => {
                 } else {
                     overlay.style.display = 'none';
                     document.querySelector('.player').innerText = userName;
-                    document.querySelector('.user_name').innerText = userName;           
+                    document.querySelector('.user_name').innerText = userName;   
+                    startBtn.removeAttribute('disabled');        
                     counter = 0;
                 }
             } else {
-                highlightedItems.forEach(item => closeTutorial(item));         
+                highlightedItems.forEach(item => item.classList.remove('styled'));  
+                closeTutorial()       
                 counter = 0;              
             }
         }
     });
 
-    function closeTutorial(elem) {
-        elem.classList.remove('styled');
+    //
+
+    function closeTutorial() {
         modalContent.innerHTML = '';
-        modalContent.append(changeContent());
+        modalContent.append(changeContentToInput());
+
+        const input = modalContent.querySelector('input');
+        input.focus();
+
         const dataText = document.querySelector('.user_input');
         console.log(dataText);
         dataText.addEventListener('input', () => {
@@ -335,7 +346,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //
 
     function chooseHighlight(counter, button) {
-        const obj = {
+        const text = {
             0: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
             1: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis maiores sunt, iusto aliquam porro dolore minus, voluptas nemo perferendis.',
             2: 'Perspiciatis maiores sunt, iusto aliquam porro dolore minus, voluptas nemo perferendis.',
@@ -343,28 +354,33 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         highlightedItems.forEach((item, i) => {
-
+            
             if (i == counter) {
                 item.classList.add('styled');
-                text.innerText = obj[i];
-            } else if (counter >= highlightedItems.length-1 && counter < highlightedItems.length) {
+                text.innerText = text[i];
+                
+            } else if (counter >= highlightedItems.length - 1 && counter < highlightedItems.length) {
                 item.classList.remove('styled');
                 button.innerText = 'Finish';
+                button.parentElement.lastChild.previousElementSibling.style.display = 'none';
             } else if (counter >= highlightedItems.length) {
-                closeTutorial(item);
+                
+                closeTutorial();
             } else {
                 item.classList.remove('styled');
             }
         });
     }
 
-    function changeContent() {
+    //
+
+    function changeContentToInput() {
         const elem = document.createElement('div');
 
         elem.innerHTML = `
             <h2 class="title_input">Enter your name</h2>
             <input type="text" class="user_input">
-            <button class="tutorial_btn close">Save</button>
+            <button class="tutorial_btn center close">Save</button>
         `;
 
         return elem;
@@ -373,10 +389,33 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // restart 
 
-    const faldBtn = document.querySelector('#fald');
-    
+    const foldBtn = document.querySelector('#fold');
+    const allCards = document.querySelectorAll('.card');
 
-    faldBtn.addEventListener('click', executeCardForming);
+    foldBtn.addEventListener('click', () => {
+        modalContent.innerHTML=`
+            <h2 class="title_input">Would you like to fold?</h2>
+            <div class="buttons__wrapper_modal">
+                <button class="tutorial_btn reload">Yes</button>
+                <button class="tutorial_btn close">No</button>
+            </div>
+            
+        `;
+        overlay.style.display = 'block';
+
+        const reloadBtn = document.querySelector('.reload');
+
+        reloadBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            startBtnWrapper.style.display = 'flex';
+            gameBtns.style.display = 'none';
+            executeCardForming();
+            allCards.forEach((card, i) => {
+                card.classList.remove('card__appear');
+                card.classList.add(`card__hidden_${i}`)
+            });
+        });
+    });
 
 
     

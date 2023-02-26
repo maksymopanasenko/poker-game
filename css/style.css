@@ -95,7 +95,7 @@
     font-size: 16px;
 }
 
-.close {
+.center {
     margin: 0 auto;
 }
 
@@ -209,60 +209,60 @@
     transform: rotate(15deg) translate(-7px, 0px);
 }
 
-.card__hidden__player_1 {
+.card__hidden_1 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-546px, 192px);
     box-shadow: none;
     z-index: -1;
 }
 
-.card__hidden__player_2 {
+.card__hidden_2 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-606px, 192px);
     box-shadow: none;
     z-index: -1;
 }
 
-.card__hidden__player_3 {
+.card__hidden_8 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-546px, -228px);
     box-shadow: none;
     z-index: -1;
 }
-.card__hidden__player_4 {
+.card__hidden_9 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-606px, -228px);
     box-shadow: none;
     z-index: -1;
 }
 
-.card__hidden_1 {
+.card__hidden_3 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-373px, -20px);
     box-shadow: none;
     z-index: -1;
 }
-.card__hidden_2 {
+.card__hidden_4 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-473px, -20px);
     box-shadow: none;
     z-index: -1;
 }
-.card__hidden_3 {
+.card__hidden_5 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-575px, -20px);
     box-shadow: none;
     z-index: -1;
 }
 
-.card__hidden_4 {
+.card__hidden_6 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-675px, -20px);
     box-shadow: none;
     z-index: -1;
 }
 
-.card__hidden_5 {
+.card__hidden_7 {
     background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-775px, -20px);
     box-shadow: none;
@@ -271,6 +271,11 @@
 
 .card__container {
     display: none;
+}
+
+.card__field {
+    display: flex;
+    justify-content: center;
 }
 
 .card__wrapper0 {
@@ -528,4 +533,12 @@ td {
     margin: 10px auto 0 auto;
     width: 80px;
     height: 80px;
+}
+
+
+.buttons__wrapper_modal {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    margin: 40px auto;
 }
