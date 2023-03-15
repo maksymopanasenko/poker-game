@@ -15,7 +15,7 @@
 
 .modal {
     width: 700px;
-    height: 500px;
+    /* height: 500px; */
     background: #0c290b;
     position: absolute;
     left: 50%;
@@ -29,7 +29,7 @@
     width: 100%;
     height: 100%;
     background: #2f962c;
-    padding: 10px;
+    padding: 10px 10px 30px 10px;
 }
 
 .modal_wrapper {
@@ -53,11 +53,11 @@
 
 .my_persone {
     display: block;
-    height: 300px;
-    width: 300px;
+    height: 260px;
+    width: auto;
     position: absolute;
-    right: -30px;
-    top: 150px;
+    right: 0;
+    top: 132px;
 }
 
 
@@ -73,6 +73,7 @@
     width: 100px;
     height: 50px;
     background-color: brown;
+    border: 2px solid #000;
     border-radius: 25px;
     cursor: pointer;
     font-size: 15px;
@@ -177,12 +178,13 @@
     display: block;
     margin: 0 auto;
     margin-bottom: 15px;
+    width: 40px;
+    height: 40px;
 }
 
 .player_name {
     color: #fff;
 }
-
 
 
 .card {
@@ -199,78 +201,66 @@
 
 .card__appear {
     transform: translate(0);
-    transition: 0.8s all;
+    transition: .8s all;
 }
 
 .card__left {
     transform: rotate(-15deg) translate(7px, 0px);
 }
+
 .card__right {
     transform: rotate(15deg) translate(-7px, 0px);
 }
 
 .card__hidden_1 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-546px, 192px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_2 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-606px, 192px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_8 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-546px, -228px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_9 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-606px, -228px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_3 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-373px, -20px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_4 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-473px, -20px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_5 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-575px, -20px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_6 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-675px, -20px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_7 {
-    background: url('../img/side.png') center center/cover no-repeat;
     transform: translate(-775px, -20px);
     box-shadow: none;
     z-index: -1;
-}
-
-.card__container {
-    display: none;
 }
 
 .card__field {
@@ -362,7 +352,7 @@
 
 
 
-img{
+.card__container img{
     width: 20px;
     height: 20px; 
     margin: 10px;

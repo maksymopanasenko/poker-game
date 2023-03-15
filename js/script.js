@@ -206,18 +206,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });      
     }
 
-    function removeAttr() {
-        checkBtn.removeAttribute('disabled');
-        raiseBtn.removeAttribute('disabled');
-        foldBtn.removeAttribute('disabled');
-    }
-
-    function addAttr() {
-        checkBtn.setAttribute('disabled', '');
-        raiseBtn.setAttribute('disabled', '');
-        foldBtn.setAttribute('disabled', '');
-    }
-
     function handCardsToPlayers() {
         const hiddenCard = document.querySelectorAll('[data-player]');
               
@@ -266,10 +254,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //
 
+    function removeAttr() {
+        checkBtn.removeAttribute('disabled');
+        raiseBtn.removeAttribute('disabled');
+        foldBtn.removeAttribute('disabled');
+    }
+
+    function addAttr() {
+        checkBtn.setAttribute('disabled', '');
+        raiseBtn.setAttribute('disabled', '');
+        foldBtn.setAttribute('disabled', '');
+    }
+
+    //
+
     function showCardContents(container, card, classElemNum) {
         card.classList.add('card__appear');
         card.classList.remove(`card__hidden_${classElemNum}`);
-        container.style.display = 'block';
+        
     }
 
 
@@ -433,7 +435,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    
+
 
 
 
