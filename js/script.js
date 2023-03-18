@@ -36,6 +36,13 @@ window.addEventListener('DOMContentLoaded', () => {
         3: 'img/spades.png'
     };
 
+    const cardImgAltBySuit = {
+        0: 'clubs',
+        1: 'diamonds',
+        2: 'hearts',
+        3: 'spades'
+    };
+
     let cardInnerElements = [],
         int = 0;
 
@@ -105,8 +112,8 @@ window.addEventListener('DOMContentLoaded', () => {
     function setSuit() {
         img.forEach((item) => {
             const a = getNum(Object.keys(cardImgBySuit).length);
-            item.setAttribute('src', cardImgBySuit[a]);  
-                
+            item.setAttribute('src', cardImgBySuit[a]);
+            item.setAttribute('alt', cardImgAltBySuit[a]);
         });
     }
 
@@ -335,7 +342,7 @@ window.addEventListener('DOMContentLoaded', () => {
         input.focus();
 
         const dataText = document.querySelector('.user_input');
-        console.log(dataText);
+        // console.log(dataText);
         dataText.addEventListener('input', () => {
             userName = dataText.value;
         });
@@ -434,6 +441,51 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // combinations
+
+    const compsCards = document.querySelectorAll('[data-card=comp]');
+    const middleCards = document.querySelectorAll('[data-card=middle]');
+
+    const compsCardsValues = [];
+    const middleCardsValues = [];
+    
+
+    getCardValues(compsCards, compsCardsValues);
+    getCardValues(middleCards, middleCardsValues);
+
+    const joinedArrays = [...compsCardsValues, ...middleCardsValues];
+
+    function getCardValues(cards, array) {
+        cards.forEach(card => {
+            const pairOfValues = [];
+            const suit = card.querySelector('img').getAttribute('alt');
+            const digit = card.querySelector('.digit__left').innerHTML;
+
+            pairOfValues.push(suit, digit);
+    
+            array.push(pairOfValues);
+        });
+    }
+
+    console.log(joinedArrays)
+
+    const matches = joinedArrays.filter((item, i) => {
+        const compare = joinedArrays.some((it, n) => {
+            if (n != i) {
+                if (it[1] == item[1]) {
+                    return it[1];
+                }
+            }
+        });
+
+        return compare;
+    });
+
+    if (matches.length == 3) {
+        console.log('Thats a set!')
+    }
+
+    console.log(matches)
 
 
 
