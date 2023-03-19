@@ -8,7 +8,8 @@ window.addEventListener('DOMContentLoaded', () => {
           startBtn = document.querySelector('.user-btn'),
           startBtnWrapper = document.querySelector('.wrapper__btn'),
           gameBtns = document.querySelector('.buttons__wrapper'),
-          parent = document.querySelectorAll('.card__container');
+          parent = document.querySelectorAll('.card__container'),
+          info = document.querySelector('.hint-text');
 
 
     const digits = [];
@@ -43,8 +44,9 @@ window.addEventListener('DOMContentLoaded', () => {
         3: 'spades'
     };
 
-    let cardInnerElements = [],
-        int = 0;
+    let cardInnerElements = [];
+    let int = 0,
+        key = 0;
 
 
 
@@ -186,12 +188,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 case 0:
                     showCardContents(container, card, 6);
                 case 1:
-                    const time = setTimeout(()=> showCardContents(container, card, 7), 500);
+                    setTimeout(()=> showCardContents(container, card, 7), 500);
             }
         });
-    }
 
-    
+        setTimeout(showMatches, 1500);
+    }
 
     function handStartSet() {
         const hiddenCard = document.querySelectorAll('[data-first]');
@@ -203,9 +205,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 case 0:
                     showCardContents(container, card, 3);
                 case 1:
-                    const time = setTimeout(()=> showCardContents(container, card, 4), 500);
+                    setTimeout(()=> showCardContents(container, card, 4), 500);
                 case 2:
-                    const time1 = setTimeout(()=> {
+                    setTimeout(()=> {
                         showCardContents(container, card, 5);
                         removeAttr();
                     }, 1000);
@@ -224,13 +226,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 case 0:
                     showCardContents(container, card, 1);
                 case 1:
-                    const time = setTimeout(()=> showCardContents(container, card, 2), 500);
+                    setTimeout(()=> showCardContents(container, card, 2), 500);
                 case 2:
                     showCardContents(container, card, 8);
                 case 3:
-                    const time1 = setTimeout(()=> showCardContents(container, card, 9), 500);
+                    setTimeout(()=> showCardContents(container, card, 9), 500);
                 default:
-                    const time2 = setTimeout(()=> handStartSet(), 1000); 
+                    setTimeout(()=> handStartSet(), 1000); 
             }
         });
         gameBtns.style.display = 'flex';
@@ -245,6 +247,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function handAdditionalCard() {
         const hiddenCard = document.querySelectorAll('.card__last');
+
+        if (hiddenCard.length < 2) {
+            setTimeout(showMatches, 1000);
+        }
 
         hiddenCard.forEach((card, i) => {
 
@@ -403,7 +409,6 @@ window.addEventListener('DOMContentLoaded', () => {
         return elem;
     }
 
-
     // restart 
 
     const allCards = document.querySelectorAll('.card');
@@ -421,6 +426,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const reloadBtn = document.querySelector('.reload');
         
+        key = 0;
+        info.innerText = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
 
         reloadBtn.addEventListener('click', () => {
             overlay.style.display = 'none';
@@ -430,7 +437,8 @@ window.addEventListener('DOMContentLoaded', () => {
             executeCardForming();
             allCards.forEach((card, i) => {
                 card.classList.remove('card__appear');
-                card.classList.add(`card__hidden_${i}`)
+                card.classList.add(`card__hidden_${i}`);
+                card.classList.remove('card__highlighted');
             });
 
             const lastCards = document.querySelectorAll('[data-class]');
@@ -443,17 +451,57 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // combinations
 
-    const compsCards = document.querySelectorAll('[data-card=comp]');
-    const middleCards = document.querySelectorAll('[data-card=middle]');
+    function showMatches() {
+        const compsCards = document.querySelectorAll('[data-card=comp]');
+        const middleCards = document.querySelectorAll('[data-card=middle]');
+        
+        const arrCards = [...compsCards, ...middleCards];
 
-    const compsCardsValues = [];
-    const middleCardsValues = [];
-    
+        const arrCardsValues = [];
 
-    getCardValues(compsCards, compsCardsValues);
-    getCardValues(middleCards, middleCardsValues);
+        getCardValues(arrCards, arrCardsValues);
+        
+        console.log(arrCardsValues);
 
-    const joinedArrays = [...compsCardsValues, ...middleCardsValues];
+        
+        const matches = arrCardsValues.filter((item, a) => {
+            return arrCardsValues.some((other, b) => {
+                if (b != a) {
+                    if (other[1] == item[1]) {
+                        return other[1];
+                    }
+                }
+            });
+        });
+
+        if (matches.length == 3) {
+            info.innerText = "That's a SET!"
+        } else if (matches.length == 2) {
+            info.innerText = "That's a PAIR!";
+        } else if (matches.length == 5) {
+            info.innerText = "That's a FULL HOUSE!";
+        } else if (matches.length == 4) {
+            if (matches[0][1] == matches[1][1] && matches[0][1] == matches[1][1] && matches[0][1] == matches[2][1] && matches[0][1] == matches[3][1]) {
+                info.innerText = "That's a FOUR OF A KIND!"; 
+            } else {
+                info.innerText = "That's TWO PAIRS!";
+            }
+        } else if (matches.length == 6) {
+            info.innerText = "That's THREE PAIRS or TWO SETS!";
+            // need to eliminate
+        } else {
+            info.innerText = "That's a HIGH CARD!";
+            // need to develop
+            const sorted = matches.sort();
+            console.log(sorted)
+        }
+        // const sorted = arrCardsValues.sort();
+        // console.log(sorted)
+        
+        console.log(matches);
+        
+        highlightMatched(arrCardsValues, matches, arrCards);
+    }
 
     function getCardValues(cards, array) {
         cards.forEach(card => {
@@ -461,31 +509,39 @@ window.addEventListener('DOMContentLoaded', () => {
             const suit = card.querySelector('img').getAttribute('alt');
             const digit = card.querySelector('.digit__left').innerHTML;
 
-            pairOfValues.push(suit, digit);
+            pairOfValues.push(suit, digit, key++); // change an order
     
             array.push(pairOfValues);
         });
     }
 
-    console.log(joinedArrays)
-
-    const matches = joinedArrays.filter((item, i) => {
-        const compare = joinedArrays.some((it, n) => {
-            if (n != i) {
-                if (it[1] == item[1]) {
-                    return it[1];
+    function highlightMatched(cardValues, matches, arrCards) {
+        cardValues.forEach((card, i) => {
+            for (let k of matches) {
+                if (card[2] == k[2]) {
+                    console.log(arrCards[i]);
+                    arrCards[i].classList.add('card__highlighted');
+                    return;
                 }
             }
         });
 
-        return compare;
-    });
-
-    if (matches.length == 3) {
-        console.log('Thats a set!')
+        // if (matches.length == 0) {
+        //     const sorted = cardValues.sort();
+        //     console.log(sorted);
+        //     return;
+        // } else {
+        //     cardValues.forEach((card, i) => {
+        //         for (let k of matches) {
+        //             if (card[2] == k[2]) {
+        //                 // console.log(arrCards[i]);
+        //                 arrCards[i].classList.add('card__highlighted');
+        //                 return;
+        //             }
+        //         }
+        //     });
+        // }
     }
-
-    console.log(matches)
 
 
 
