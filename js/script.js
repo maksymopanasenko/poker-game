@@ -59,8 +59,6 @@ window.addEventListener('DOMContentLoaded', () => {
           diamonds = [],
           hearts = [],
           spades = [];
-    
-    
 
 
     // constants, lets !!!!!!!!!!!!!!!!!!
@@ -68,24 +66,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
     executeCardForming();
     
-    
     startBtn.addEventListener('click', handCardsToPlayers);
 
-
-    
-    
     function executeCardForming() {
 
         digits.length = 0;
         int = 0;
 
-        digitLeft.forEach((i) => {
+        digitLeft.forEach((item, i) => {
             const counter = getNum(Object.keys(value).length);
-            i.textContent = value[counter];
-            digits.push(i.textContent);
+            item.textContent = value[counter];
+            digitRight.forEach((dgt, n) => {
+                if (n == i) {
+                    dgt.textContent = item.textContent;
+                }
+            })
+            digits.push(item.textContent);
         });
 
-        equalsDigits();
         setSuit();
 
         const tempArray = [...digits].sort();
@@ -102,13 +100,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   
         getherCollection();
-    }
-
-    function equalsDigits() {
-        digitRight.forEach((a) => {
-            a.textContent = digits[int];
-            int++;      
-        });
     }
 
     function setSuit() {
@@ -192,7 +183,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        setTimeout(showMatches, 1500);
+        setTimeout(() => showMatches('[data-card=player]'), 1500);
     }
 
     function handStartSet() {
@@ -249,7 +240,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const hiddenCard = document.querySelectorAll('.card__last');
 
         if (hiddenCard.length < 2) {
-            setTimeout(showMatches, 1000);
+            setTimeout(() => showMatches('[data-card=player]'), 1000);
         }
 
         hiddenCard.forEach((card, i) => {
@@ -451,16 +442,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // combinations
 
-    function showMatches() {
-        const compsCards = document.querySelectorAll('[data-card=comp]');
+    function compaireSets() {
+        //
+    }
+
+    function showMatches(player) {
+        const playersCards = document.querySelectorAll(player);
         const middleCards = document.querySelectorAll('[data-card=middle]');
         const cardValueEntries = Object.entries(value);
         
-        const arrCards = [...compsCards, ...middleCards];
+        const arrCards = [...playersCards, ...middleCards];
 
         const arrCardsValues = getCardValues(arrCards);
         
-        console.log(arrCardsValues);
 
         
         const matches = arrCardsValues.filter((item, a) => {
@@ -472,6 +466,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+
 
         if (matches.length == 3) {
             info.innerText = "That's a SET!"
@@ -487,25 +482,42 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         } else if (matches.length == 6) {
             info.innerText = "That's THREE PAIRS or TWO SETS!";
-            // need to eliminate
+
+            const catched = detectHighest(cardValueEntries, matches);
+
+            if (catched[0][0] == catched[1][0] && catched[0][0] == catched[2][0]) {
+                console.log(catched.slice(3))
+            } else {
+                console.log(catched.slice(2));
+            }
+            
         } else {
             info.innerText = "That's a HIGH CARD!";
         }
 
-        const highest = detectHighest(cardValueEntries, arrCardsValues);
-        
-        highlightMatched(arrCardsValues, matches, arrCards, highest);
+        const highest = detectHighest(cardValueEntries, arrCardsValues).pop();
+
+        highlightMatched(arrCardsValues, matches, cardValueEntries, arrCards, highest);
     }
 
     function detectHighest(cardValueEntries, arrCardsValues) {
-        return cardValueEntries.filter(value => {
-            return arrCardsValues.some((card, i) => {
+        const arr = [];
+
+        cardValueEntries.forEach(value => {
+            arrCardsValues.forEach((card, i) => {
+                const bar = []
                 if (card[0] == value[1]) {
-                    return value.push(i);
+                    bar.push(...value, i)  
+                    
+                    arr.push(bar)                  
                 }
+                
             });
-        }).pop();
+        })
+        return arr;
     }
+
+    
 
     function getCardValues(cards) {
         return cards.map(card => {
@@ -519,21 +531,43 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function highlightMatched(arrCardsValues, matches, arrCards, highest) {
+    function highlightMatched(arrCardsValues, matches, cardValueEntries, arrCards, highest) {
 
         if (matches.length == 0) {
             arrCardsValues.forEach((card, i) => {
                 if (card[2] == highest[2]) {
-                    // console.log(arrCards[i]);
                     arrCards[i].classList.add('card__highlighted');
                     return;
                 }
             });
+        } else if (matches.length == 6) {
+            const catched = detectHighest(cardValueEntries, matches);
+
+            if (catched[0][0] == catched[1][0] && catched[0][0] == catched[2][0]) {
+                const work = catched.slice(3);
+                arrCardsValues.forEach((card, i) => {
+                    for (let k of work) {
+                        if (card[0] == k[1]) {
+                            arrCards[i].classList.add('card__highlighted');
+                            return;
+                        }
+                    }
+                });
+            } else {
+                const work = catched.slice(2);
+                arrCardsValues.forEach((card, i) => {
+                    for (let k of work) {
+                        if (card[0] == k[1]) {
+                            arrCards[i].classList.add('card__highlighted');
+                            return;
+                        }
+                    }
+                });
+            }
         } else {
             arrCardsValues.forEach((card, i) => {
                 for (let k of matches) {
                     if (card[2] == k[2]) {
-                        // console.log(arrCards[i]);
                         arrCards[i].classList.add('card__highlighted');
                         return;
                     }
