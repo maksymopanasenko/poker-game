@@ -183,7 +183,9 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        setTimeout(() => showMatches('[data-card=player]'), 1500);
+        determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
+        // setTimeout(() => showMatches('[data-card=player]'), 1500);
+        // setTimeout(() => showMatches('[data-card=comp]'), 1500);
     }
 
     function handStartSet() {
@@ -240,7 +242,9 @@ window.addEventListener('DOMContentLoaded', () => {
         const hiddenCard = document.querySelectorAll('.card__last');
 
         if (hiddenCard.length < 2) {
-            setTimeout(() => showMatches('[data-card=player]'), 1000);
+            determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
+            // setTimeout(() => showMatches('[data-card=player]'), 1000);
+            // setTimeout(() => showMatches('[data-card=comp]'), 1000);
         }
 
         hiddenCard.forEach((card, i) => {
@@ -442,15 +446,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // combinations
 
-    // function compaireSets() {
-    //     //
-    // }
+    function determineWinner(player, comp) {
 
-    // function calcPoints(arrCardsValues) {
-    //     //
-    // }
+        console.log(`You scored with ${player} points`)
+        console.log(`Computer scored with ${comp} points`)
+        if (player > comp) {
+            highlightWinner('[data-card=player]');
+            
+        } else if (comp > player) {
+            highlightWinner('[data-card=comp]');
+        } else {
+            console.log('remis'); // need to solve and develop
+        }
+    }
 
-    function showMatches(player) {
+    function highlightWinner(player) {
         const playersCards = document.querySelectorAll(player);
         const middleCards = document.querySelectorAll('[data-card=middle]');
         const cardValueEntries = Object.entries(value);
@@ -470,7 +480,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         if (matches.length == 3) {
-            info.innerText = "That's a SET!";
+            info.innerText = "That are 3 of a kind!";
         } else if (matches.length == 2) {
             info.innerText = "That's a PAIR!";
         } else if (matches.length == 5) {
@@ -479,7 +489,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
                 info.innerText = "That's a FOUR OF A KIND!"; 
             } else {
-                info.innerText = "That's TWO PAIRS!";
+                info.innerText = "That are TWO PAIRS!";
             }
         } else if (matches.length == 6) {
             const catched = detectHighest(cardValueEntries, matches);
@@ -494,9 +504,58 @@ window.addEventListener('DOMContentLoaded', () => {
             info.innerText = "That's a HIGH CARD!";
         }
 
+        
         const highest = detectHighest(cardValueEntries, arrCardsValues).pop();
 
         highlightMatched(arrCardsValues, matches, cardValueEntries, arrCards, highest);
+    }
+
+    function showMatches(player) {
+        let pointsCounter = 0;
+        const playersCards = document.querySelectorAll(player);
+        const middleCards = document.querySelectorAll('[data-card=middle]');
+        const cardValueEntries = Object.entries(value);
+        
+        const arrCards = [...playersCards, ...middleCards];
+
+        const arrCardsValues = getCardValues(arrCards);
+        
+        const matches = arrCardsValues.filter((item, a) => {
+            return arrCardsValues.some((other, b) => {
+                if (b != a) {
+                    if (other[0] == item[0]) {
+                        return other[0];
+                    }
+                }
+            });
+        });
+
+        if (matches.length == 3) {
+            pointsCounter += 4;
+        } else if (matches.length == 2) {
+            pointsCounter += 2;
+        } else if (matches.length == 5) {
+            pointsCounter += 5;
+        } else if (matches.length == 4) {
+            if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
+                pointsCounter += 6;
+            } else {
+                pointsCounter += 3;
+            }
+        } else if (matches.length == 6) {
+            const catched = detectHighest(cardValueEntries, matches);
+
+            if (catched[0][0] == catched[1][0] && catched[0][0] == catched[2][0]) {
+                pointsCounter += 4;
+            } else {
+                pointsCounter += 3;
+            }
+            
+        } else {
+            pointsCounter += 1;
+        }
+
+        return pointsCounter;
     }
 
     function detectHighest(cardValueEntries, arrCardsValues) {
