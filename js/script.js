@@ -184,8 +184,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-        // setTimeout(() => showMatches('[data-card=player]'), 1500);
-        // setTimeout(() => showMatches('[data-card=comp]'), 1500);
     }
 
     function handStartSet() {
@@ -243,8 +241,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (hiddenCard.length < 2) {
             determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-            // setTimeout(() => showMatches('[data-card=player]'), 1000);
-            // setTimeout(() => showMatches('[data-card=comp]'), 1000);
         }
 
         hiddenCard.forEach((card, i) => {
@@ -448,16 +444,41 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function determineWinner(player, comp) {
 
-        console.log(`You scored with ${player} points`)
-        console.log(`Computer scored with ${comp} points`)
-        if (player > comp) {
+        const [pointsPlayer, matchesPlayer, highestPlayer] = player;
+        const [pointsComp, matchesComp, highestComp] = comp;
+
+        console.log(`You scored with ${pointsPlayer} points`)
+        console.log(`Computer scored with ${pointsComp} points`)
+        if (pointsPlayer > pointsComp) {
             highlightWinner('[data-card=player]');
             
-        } else if (comp > player) {
+        } else if (pointsComp > pointsPlayer) {
             highlightWinner('[data-card=comp]');
         } else {
-            console.log('remis'); // need to solve and develop
+            const playerSum = highlightIfEqual(matchesPlayer);
+            const compSum = highlightIfEqual(matchesComp);
+            console.log(matchesPlayer)
+            console.log(matchesComp)
+            if (playerSum > compSum) {
+                highlightWinner('[data-card=player]');
+                console.log('you won');
+            } else if (compSum > playerSum) {
+                highlightWinner('[data-card=comp]');
+                console.log('comp won');
+            } else {
+                highlightWinner('[data-card=player]');
+                highlightWinner('[data-card=comp]');
+                console.log('draw');
+            }
+             // need to solve and develop with high card
+            info.innerText = "Draw... in development";
         }
+    }
+
+    function highlightIfEqual(matched) {
+        let counter = 0;
+        matched.forEach(item => counter += item[0]);
+        return counter;
     }
 
     function highlightWinner(player) {
@@ -555,7 +576,12 @@ window.addEventListener('DOMContentLoaded', () => {
             pointsCounter += 1;
         }
 
-        return pointsCounter;
+        const highest = detectHighest(cardValueEntries, arrCardsValues).pop();
+        const dataArr = [];
+
+        dataArr.push(pointsCounter, matches, highest)
+
+        return dataArr;
     }
 
     function detectHighest(cardValueEntries, arrCardsValues) {
