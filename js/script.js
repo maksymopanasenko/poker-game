@@ -444,21 +444,25 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function determineWinner(player, comp) {
 
-        const [pointsPlayer, matchesPlayer, highestPlayer] = player;
-        const [pointsComp, matchesComp, highestComp] = comp;
+        const [pointsPlayer, matchesPlayer, catchedP, highestPlayer] = player;
+        const [pointsComp, matchesComp, catchedC, highestComp] = comp;
 
         console.log(`You scored with ${pointsPlayer} points`)
         console.log(`Computer scored with ${pointsComp} points`)
+        console.log(matchesPlayer)
+        console.log(matchesComp)
         if (pointsPlayer > pointsComp) {
             highlightWinner('[data-card=player]');
-            
         } else if (pointsComp > pointsPlayer) {
             highlightWinner('[data-card=comp]');
         } else {
-            const playerSum = highlightIfEqual(matchesPlayer);
-            const compSum = highlightIfEqual(matchesComp);
-            console.log(matchesPlayer)
-            console.log(matchesComp)
+            const playerSum = highlightIfEqual(catchedP);
+            const compSum = highlightIfEqual(catchedC);
+            // console.log(catchedP)
+            // console.log(catchedC)
+            // console.log(playerSum);
+            // console.log(compSum);
+
             if (playerSum > compSum) {
                 highlightWinner('[data-card=player]');
                 console.log('you won');
@@ -470,14 +474,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 highlightWinner('[data-card=comp]');
                 console.log('draw');
             }
-             // need to solve and develop with high card
-            info.innerText = "Draw... in development";
+            // need to develop cases tree
+            // need to solve and develop with high card
         }
     }
 
     function highlightIfEqual(matched) {
         let counter = 0;
-        matched.forEach(item => counter += item[0]);
+        matched.forEach(item => counter += +item[0]);
+
         return counter;
     }
 
@@ -516,9 +521,9 @@ window.addEventListener('DOMContentLoaded', () => {
             const catched = detectHighest(cardValueEntries, matches);
 
             if (catched[0][0] == catched[1][0] && catched[0][0] == catched[2][0]) {
-                info.innerText = "That are TWO SETS!";
+                info.innerText = "That are FULL HOUSE!";
             } else {
-                info.innerText = "That are THREE PAIRS!";
+                info.innerText = "That are TWO PAIRS!";
             }
             
         } else {
@@ -567,7 +572,7 @@ window.addEventListener('DOMContentLoaded', () => {
             const catched = detectHighest(cardValueEntries, matches);
 
             if (catched[0][0] == catched[1][0] && catched[0][0] == catched[2][0]) {
-                pointsCounter += 4;
+                pointsCounter += 5;
             } else {
                 pointsCounter += 3;
             }
@@ -575,38 +580,36 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             pointsCounter += 1;
         }
+        const catched = detectHighest(cardValueEntries, matches);
 
         const highest = detectHighest(cardValueEntries, arrCardsValues).pop();
         const dataArr = [];
-
-        dataArr.push(pointsCounter, matches, highest)
+        dataArr.push(pointsCounter, matches, catched, highest)
 
         return dataArr;
     }
 
     function detectHighest(cardValueEntries, arrCardsValues) {
         const arr = [];
-
         cardValueEntries.forEach(value => {
             arrCardsValues.forEach(card => {
-
                 if (card[0] == value[1]) {
-                    
-                    arr.push(value);                 
+                    const ar = []
+                    ar.push(...value, card[2]);
+                    arr.push(ar);                 
                 }                
             });
         });
-
         return arr;
     }
 
     function getCardValues(cards) {
-        return cards.map(card => {
+        return cards.map((card, i) => {
             const pairOfValues = [];
             const suit = card.querySelector('img').getAttribute('alt');
             const digit = card.querySelector('.digit__left').innerHTML;
 
-            pairOfValues.push(digit, suit, key++);
+            pairOfValues.push(digit, suit, i);
     
             return pairOfValues;
         });
@@ -625,21 +628,22 @@ window.addEventListener('DOMContentLoaded', () => {
             const catched = detectHighest(cardValueEntries, matches);
 
             if (catched[0][0] == catched[1][0] && catched[0][0] == catched[2][0]) {
-                const work = catched.slice(3);
-                setHighlight(arrCardsValues, work, arrCards, 1);
+                const work = catched.slice(1);
+                setHighlight(arrCardsValues, work, arrCards);
             } else {
                 const work = catched.slice(2);
-                setHighlight(arrCardsValues, work, arrCards, 1);
+                setHighlight(arrCardsValues, work, arrCards);
             }
         } else {
-            setHighlight(arrCardsValues, matches, arrCards, 0); 
+            setHighlight(arrCardsValues, matches, arrCards); 
         }
     }
 
-    function setHighlight(arrValues, arr, arrCards, num) {
+    function setHighlight(arrValues, arr, arrCards) {
+
         arrValues.forEach((card, i) => {
             for (const key of arr) {
-                if (card[0] == key[num]) {
+                if (card[2] == key[2]) {
                     arrCards[i].classList.add('card__highlighted');
                     return;
                 }
@@ -663,7 +667,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     
 
-    
+
 
 
 
