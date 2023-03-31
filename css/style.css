@@ -514,11 +514,15 @@ td {
     box-shadow: 0 0 30px rgb(255, 255, 255);
 }
 
-.hint-title {
+.hint__title, .hint__subtitle {
     text-align: center;
 }
 
-.hint-text {
+.hint__subtitle {
+    margin-top: 10px;
+}
+
+.hint__text {
     margin-top: 20px;
     font-size: 14px;
     text-align: center;
