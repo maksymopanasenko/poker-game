@@ -312,7 +312,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 addElementToDOM('.buttons__wrapper_tutorial', 'button', 'tutorial_btn', 'next', 'Next');
                 const newButton = document.querySelector('.next');
                 
-                chooseHighlight(0);
+                chooseHighlight();
                 newButton.addEventListener('click', (e) => {
                     chooseHighlight(counter, e.target);
                     counter++;
@@ -332,7 +332,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 closeTutorial();      
                 counter = 0;   
                 const newButton = document.querySelector('.next');
-                newButton.remove();
+                newButton ? newButton.remove() : null;
                 target.classList.add('close');
                 target.parentElement.classList.add('center');
                 target.innerText = "Save";
@@ -370,7 +370,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //
 
-    function chooseHighlight(counter, button) {
+    function chooseHighlight(counter = 0, button) {
         const text = {
             0: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
             1: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis maiores sunt, iusto aliquam porro dolore minus, voluptas nemo perferendis.',
@@ -384,17 +384,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 item.classList.add('styled');
                 text.innerText = text[i];
                 
-            } else if (counter >= highlightedItems.length - 1 && counter < highlightedItems.length) {
-                item.classList.remove('styled');
-                button.innerText = 'Finish';
-                button.parentElement.lastChild.previousElementSibling.style.display = 'none';
-            } else if (counter >= highlightedItems.length) {
-                
-                closeTutorial();
             } else {
                 item.classList.remove('styled');
             }
         });
+
+        if (counter >= highlightedItems.length - 1 && counter < highlightedItems.length) {
+            button.parentElement.lastChild.previousElementSibling.innerText = "Finish";
+            button.remove();
+
+        } else if (counter >= highlightedItems.length) {
+            closeTutorial();
+        }
     }
 
     //
@@ -425,7 +426,10 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
         overlay.style.display = 'block';
 
-        const reloadBtn = document.querySelector('.reload');
+        const reloadBtn = document.querySelector('.reload'),
+              close = document.querySelector('.close');
+        
+        close.addEventListener('click', () => overlay.style.display = 'none');
         
         key = 0;
         subtitleText.innerText = "Lorem";
