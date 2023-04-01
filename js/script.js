@@ -9,7 +9,8 @@ window.addEventListener('DOMContentLoaded', () => {
           startBtnWrapper = document.querySelector('.wrapper__btn'),
           gameBtns = document.querySelector('.buttons__wrapper'),
           parent = document.querySelectorAll('.card__container'),
-          info = document.querySelector('.hint__subtitle');
+          subtitleText = document.querySelector('.hint__subtitle'),
+          coreText = document.querySelector('.hint__text');
 
 
     const digits = [];
@@ -418,7 +419,8 @@ window.addEventListener('DOMContentLoaded', () => {
         const reloadBtn = document.querySelector('.reload');
         
         key = 0;
-        info.innerText = "Lorem";
+        subtitleText.innerText = "Lorem";
+        coreText.innerText = "Lorem ipsum dolores."
 
         reloadBtn.addEventListener('click', () => {
             overlay.style.display = 'none';
@@ -447,42 +449,66 @@ window.addEventListener('DOMContentLoaded', () => {
         const [pointsPlayer, matchesPlayer, highestPlayer] = player;
         const [pointsComp, matchesComp, highestComp] = comp;
 
+        const addText = (player) => {
+            if (player == '[data-card=player]') {
+                coreText.innerText = "You won!";
+            } else {
+                coreText.innerText = "Oponent won!";
+            }
+        }
+
         console.log(`You scored with ${pointsPlayer} points`)
         console.log(`Computer scored with ${pointsComp} points`)
         console.log(matchesPlayer)
         console.log(matchesComp)
+
         if (pointsPlayer > pointsComp) {
             highlightWinner('[data-card=player]');
+            coreText.innerText = "You won!";
         } else if (pointsComp > pointsPlayer) {
             highlightWinner('[data-card=comp]');
+            coreText.innerText = "Oponent won!";
         } else {
+            
             const playerSum = compareEquals(matchesPlayer);
             const compSum = compareEquals(matchesComp);
-            // console.log(catchedP)
-            // console.log(catchedC)
-            // console.log(playerSum);
-            // console.log(compSum);
+
+
+            console.log(playerSum);
+            console.log(compSum);
 
             if (playerSum > compSum) {
                 highlightWinner('[data-card=player]');
-                console.log('you won');
+                coreText.innerText = "You won!";
             } else if (compSum > playerSum) {
                 highlightWinner('[data-card=comp]');
-                console.log('comp won');
+                coreText.innerText = "Oponent won!";
             } else {
-                console.log(highestPlayer)
-                console.log(highestComp)
-                const playerHigh = compareEquals(highestPlayer);
-                const compHigh = compareEquals(highestComp);
-                console.log(playerHigh)
-                if (playerHigh > compHigh) {
-                    console.log('playerHigh')
-                    highlightWinner('[data-card=player]');
-                } else if (compHigh > playerHigh) {
-                    console.log('compHigh')
-                    highlightWinner('[data-card=comp]');
+                if (!matchesPlayer.length && !matchesComp.length) {
+
+                    const playerHigh = compareEquals(highestPlayer);
+                    const compHigh = compareEquals(highestComp);
+                    // console.log(highestPlayer)
+                    // console.log(highestComp)
+                    // console.log(playerHigh)
+
+                    if (playerHigh > compHigh) {
+                        console.log('playerHigh')
+                        highlightWinner('[data-card=player]');
+                        coreText.innerText = "You won!";
+                    } else if (compHigh > playerHigh) {
+                        console.log('compHigh')
+                        highlightWinner('[data-card=comp]');
+                        coreText.innerText = "Oponent won!";
+                    } else {
+                        highlightWinner('[data-card=comp]');
+                        console.log('High in dev');
+                    }
                 } else {
-                    console.log('draw high');
+                    highlightWinner('[data-card=comp]');
+                    highlightWinner('[data-card=player]');
+                    coreText.innerText = "This is a draw!";
+                    console.log('draw');
                 }
             }
             // need to develop cases tree
@@ -503,29 +529,29 @@ window.addEventListener('DOMContentLoaded', () => {
         const [matches, cardValueEntries, arrCardsValues, arrCards] = getMatches(player);
 
         if (matches.length == 3) {
-            info.innerHTML = "That are <u>3 of a kind</u>!";
+            subtitleText.innerHTML = "That are <u>3 of a kind</u>!";
         } else if (matches.length == 2) {
-            info.innerHTML = "That's a <u>PAIR</u>!";
+            subtitleText.innerHTML = "That's a <u>PAIR</u>!";
         } else if (matches.length == 5) {
-            info.innerHTML = "That's a <u>FULL HOUSE</u>!";
+            subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
         } else if (matches.length == 4) {
             if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
-                info.innerHTML = "That's a <u>FOUR OF A KIND</u>!"; 
+                subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!"; 
             } else {
-                info.innerHTML = "That are <u>TWO PAIRS</u>!";
+                subtitleText.innerHTML = "That are <u>TWO PAIRS</u>!";
             }
         } else if (matches.length == 6) {
 
             if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
-                info.innerHTML = "That are <u>FULL HOUSE</u>!";
+                subtitleText.innerHTML = "That are <u>FULL HOUSE</u>!";
             } else {
-                info.innerHTML = "That are <u>TWO PAIRS</u>!";
+                subtitleText.innerHTML = "That are <u>TWO PAIRS</u>!";
             }
             
         } else if (matches.length == 7) {
-            info.innerHTML = "That are <u>FULL HOUSE</u>!";
+            subtitleText.innerHTML = "That are <u>FULL HOUSE</u>!";
         } else {
-            info.innerHTML = "That's a <u>HIGH CARD</u>!";
+            subtitleText.innerHTML = "That's a <u>HIGH CARD</u>!";
         }
         
         const highest = [];
@@ -553,7 +579,7 @@ window.addEventListener('DOMContentLoaded', () => {
         } else if (matches.length == 6) {
 
             if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
-                pointsCounter += 5;
+                pointsCounter += 4;
             } else {
                 pointsCounter += 3;
             }
@@ -568,9 +594,9 @@ window.addEventListener('DOMContentLoaded', () => {
         highestCard.push(detectHighest(cardValueEntries, arrCardsValues).pop());
         const dataArr = [];
         dataArr.push(pointsCounter, matches, highestCard)
-        // console.log(highestCard)
+
         return dataArr;
-    }
+    };
 
     function getMatches(player) {
         const playersCards = document.querySelectorAll(player);
@@ -593,7 +619,19 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        return [matches, cardValueEntries, arrCardsValues, arrCards];
+        const cutMatches = [];
+        
+        if (matches.length == 6) {
+                if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
+                    cutMatches.push(...matches.slice(3));
+                } else {
+                    cutMatches.push(...matches.slice(2));
+                }
+        } else {
+            cutMatches.push(...matches);
+        }        
+
+        return [cutMatches, cardValueEntries, arrCardsValues, arrCards];
     }
 
     function detectHighest(cardValueEntries, arrCardsValues) {
@@ -631,15 +669,6 @@ window.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
             });
-        } else if (matches.length == 6) {
-
-            if (matches[0][0] == matches[1][0] && matches[0][0] == catched[2][0]) {
-                const cut = matches.slice(1);
-                setHighlight(arrCardsValues, cut, arrCards);
-            } else {
-                const cut = matches.slice(2);
-                setHighlight(arrCardsValues, cut, arrCards);
-            }
         } else if (matches.length == 7) {
             const cut = matches.slice(3); // need to solve!
             setHighlight(arrCardsValues, cut, arrCards);
