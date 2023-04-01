@@ -61,7 +61,7 @@
 }
 
 
-.buttons_wrapper {
+.buttons__wrapper_tutorial {
     display: flex;
     width: 240px;
     justify-content: center;

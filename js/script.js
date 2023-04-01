@@ -8,7 +8,8 @@ window.addEventListener('DOMContentLoaded', () => {
           startBtn = document.querySelector('.user-btn'),
           startBtnWrapper = document.querySelector('.wrapper__btn'),
           gameBtns = document.querySelector('.buttons__wrapper'),
-          parent = document.querySelectorAll('.card__container'),
+          tutorialBtns = document.querySelector('.buttons__wrapper_tutorial'),
+          card = document.querySelectorAll('.card__container'),
           subtitleText = document.querySelector('.hint__subtitle'),
           coreText = document.querySelector('.hint__text');
 
@@ -45,15 +46,19 @@ window.addEventListener('DOMContentLoaded', () => {
         3: 'spades'
     };
 
+    const playerResult = {
+        player: 0,
+        comp: 0
+    }
+
     let cardInnerElements = [];
     let int = 0,
         key = 0;
 
 
 
-    parent.forEach((i) => {
+    card.forEach((i) => {
         cardInnerElements.push(i.children);
-    
     });
 
     const clubs = [],
@@ -279,7 +284,6 @@ window.addEventListener('DOMContentLoaded', () => {
         
     }
 
-
     // change img in hints
 
     const emoji = document.querySelector('.hint-img');
@@ -291,20 +295,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const text = document.querySelector('.greating_text'),
           overlay = document.querySelector('.overlay'),
+          modalWrapper = overlay.querySelector('.modal_wrapper'),
           modalContent = overlay.querySelector('.modal_content'),
           highlightedItems = document.querySelectorAll('.highlight');
 
     let userName;
 
-    modalContent.addEventListener('click', (e) => {
+    tutorialBtns.addEventListener('click', (e) => {
         let counter = 1;
         const target = e.target;
-        if (target.nodeName == "BUTTON" && target.className != 'tutorial_btn next') {
+        if (target && target.nodeName == "BUTTON" && target.className != 'tutorial_btn next') {
 
             if (target.classList.contains('start')) {
                 target.classList.remove('start');
                 target.innerText = 'Skip all';
-                addElementToDOM('.buttons_wrapper', 'button', 'tutorial_btn', 'next', 'Next');
+                addElementToDOM('.buttons__wrapper_tutorial', 'button', 'tutorial_btn', 'next', 'Next');
                 const newButton = document.querySelector('.next');
                 
                 chooseHighlight(0);
@@ -324,8 +329,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             } else {
                 highlightedItems.forEach(item => item.classList.remove('styled'));  
-                closeTutorial()       
-                counter = 0;              
+                closeTutorial();      
+                counter = 0;   
+                const newButton = document.querySelector('.next');
+                newButton.remove();
+                target.classList.add('close');
+                target.parentElement.classList.add('center');
+                target.innerText = "Save";
             }
         }
     });
@@ -333,10 +343,10 @@ window.addEventListener('DOMContentLoaded', () => {
     //
 
     function closeTutorial() {
-        modalContent.innerHTML = '';
-        modalContent.append(changeContentToInput());
+        modalWrapper.innerHTML = '';
+        modalWrapper.append(changeContentToInput());
 
-        const input = modalContent.querySelector('input');
+        const input = modalWrapper.querySelector('input');
         input.focus();
 
         const dataText = document.querySelector('.user_input');
@@ -395,7 +405,6 @@ window.addEventListener('DOMContentLoaded', () => {
         elem.innerHTML = `
             <h2 class="title_input">Enter your name</h2>
             <input type="text" class="user_input">
-            <button class="tutorial_btn center close">Save</button>
         `;
 
         return elem;
@@ -446,16 +455,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function determineWinner(player, comp) {
 
-        const [pointsPlayer, matchesPlayer, highestPlayer] = player;
-        const [pointsComp, matchesComp, highestComp] = comp;
-
-        const addText = (player) => {
-            if (player == '[data-card=player]') {
-                coreText.innerText = "You won!";
-            } else {
-                coreText.innerText = "Oponent won!";
-            }
-        }
+        const [pointsPlayer, valuesP, matchesPlayer, cardsP, highestPlayer] = player;
+        const [pointsComp, valuesC, matchesComp, cardsC, highestComp] = comp;
 
         console.log(`You scored with ${pointsPlayer} points`)
         console.log(`Computer scored with ${pointsComp} points`)
@@ -463,25 +464,21 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(matchesComp)
 
         if (pointsPlayer > pointsComp) {
-            highlightWinner('[data-card=player]');
+            highlightAndDescribeCombination(player.slice(1));
             coreText.innerText = "You won!";
         } else if (pointsComp > pointsPlayer) {
-            highlightWinner('[data-card=comp]');
+            highlightAndDescribeCombination(comp.slice(1));
             coreText.innerText = "Oponent won!";
         } else {
             
             const playerSum = compareEquals(matchesPlayer);
             const compSum = compareEquals(matchesComp);
 
-
-            console.log(playerSum);
-            console.log(compSum);
-
             if (playerSum > compSum) {
-                highlightWinner('[data-card=player]');
+                highlightAndDescribeCombination(player.slice(1));
                 coreText.innerText = "You won!";
             } else if (compSum > playerSum) {
-                highlightWinner('[data-card=comp]');
+                highlightAndDescribeCombination(comp.slice(1));
                 coreText.innerText = "Oponent won!";
             } else {
                 if (!matchesPlayer.length && !matchesComp.length) {
@@ -494,19 +491,27 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     if (playerHigh > compHigh) {
                         console.log('playerHigh')
-                        highlightWinner('[data-card=player]');
+                        highlightAndDescribeCombination(player.slice(1));
                         coreText.innerText = "You won!";
                     } else if (compHigh > playerHigh) {
                         console.log('compHigh')
-                        highlightWinner('[data-card=comp]');
+                        highlightAndDescribeCombination(comp.slice(1));
                         coreText.innerText = "Oponent won!";
                     } else {
-                        highlightWinner('[data-card=comp]');
+                        // console.log(checkHighCard())
+                        // function checkHighCard() {
+                        //     const onwCardsPlayer = document.querySelectorAll('[data-card=player]');
+                        //     const onwCardsComp = document.querySelectorAll('[data-card=comp]');
+                        //     return onwCardsComp
+                        // }
+
+                        highlightAndDescribeCombination(comp.slice(1));
                         console.log('High in dev');
                     }
                 } else {
-                    highlightWinner('[data-card=comp]');
-                    highlightWinner('[data-card=player]');
+                    highlightAndDescribeCombination(comp.slice(1));
+                    highlightAndDescribeCombination(player.slice(1));
+
                     coreText.innerText = "This is a draw!";
                     console.log('draw');
                 }
@@ -524,45 +529,11 @@ window.addEventListener('DOMContentLoaded', () => {
         return counter;
     }
 
-    function highlightWinner(player) {
-
-        const [matches, cardValueEntries, arrCardsValues, arrCards] = getMatches(player);
-
-        if (matches.length == 3) {
-            subtitleText.innerHTML = "That are <u>3 of a kind</u>!";
-        } else if (matches.length == 2) {
-            subtitleText.innerHTML = "That's a <u>PAIR</u>!";
-        } else if (matches.length == 5) {
-            subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
-        } else if (matches.length == 4) {
-            if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
-                subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!"; 
-            } else {
-                subtitleText.innerHTML = "That are <u>TWO PAIRS</u>!";
-            }
-        } else if (matches.length == 6) {
-
-            if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
-                subtitleText.innerHTML = "That are <u>FULL HOUSE</u>!";
-            } else {
-                subtitleText.innerHTML = "That are <u>TWO PAIRS</u>!";
-            }
-            
-        } else if (matches.length == 7) {
-            subtitleText.innerHTML = "That are <u>FULL HOUSE</u>!";
-        } else {
-            subtitleText.innerHTML = "That's a <u>HIGH CARD</u>!";
-        }
-        
-        const highest = [];
-        highest.push(detectHighest(cardValueEntries, arrCardsValues).pop());
-        highlightMatched(arrCardsValues, matches, arrCards, highest);
-    }
 
     function showMatches(player) {
         let pointsCounter = 0;
 
-        const [matches, cardValueEntries, arrCardsValues] = getMatches(player);
+        const [matches, cardValueEntries, arrCardsValues, arrCards] = getMatches(player);
 
         if (matches.length == 3) {
             pointsCounter += 4;
@@ -576,14 +547,6 @@ window.addEventListener('DOMContentLoaded', () => {
             } else {
                 pointsCounter += 3;
             }
-        } else if (matches.length == 6) {
-
-            if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
-                pointsCounter += 4;
-            } else {
-                pointsCounter += 3;
-            }
-            
         } else if (matches.length == 7) {
             pointsCounter += 5;
         } else {
@@ -593,7 +556,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const highestCard = [];
         highestCard.push(detectHighest(cardValueEntries, arrCardsValues).pop());
         const dataArr = [];
-        dataArr.push(pointsCounter, matches, highestCard)
+        dataArr.push(pointsCounter, arrCardsValues, matches, arrCards, highestCard);
 
         return dataArr;
     };
@@ -660,7 +623,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function highlightMatched(arrCardsValues, matches, arrCards, highest) {
+    function highlightAndDescribeCombination([arrCardsValues, matches, arrCards, highest]) {
 
         if (matches.length == 0) {
             arrCardsValues.forEach((card, i) => {
@@ -669,11 +632,27 @@ window.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
             });
+
+            subtitleText.innerHTML = "That's a <u>HIGH CARD</u>!";
         } else if (matches.length == 7) {
             const cut = matches.slice(3); // need to solve!
             setHighlight(arrCardsValues, cut, arrCards);
         } else {
             setHighlight(arrCardsValues, matches, arrCards); 
+
+            if (matches.length == 3) {
+                subtitleText.innerHTML = "That are <u>3 of a kind</u>!";
+            } else if (matches.length == 2) {
+                subtitleText.innerHTML = "That's a <u>PAIR</u>!";
+            } else if (matches.length == 5 || matches.length == 7) {
+                subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
+            } else if (matches.length == 4) {
+                if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
+                    subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!"; 
+                } else {
+                    subtitleText.innerHTML = "That are <u>TWO PAIRS</u>!";
+                }
+            }
         }
     }
 
