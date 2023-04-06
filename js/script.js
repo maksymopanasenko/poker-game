@@ -69,234 +69,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // variables above !!!!!!!!!!!!!!!!!!
 
-
-    executeCardForming();
-    
-    startBtn.addEventListener('click', handCardsToPlayers);
-
-    function executeCardForming() {
-
-        digits.length = 0;
-        int = 0;
-
-        digitLeft.forEach((item, i) => {
-            const counter = getNum(Object.keys(value).length);
-            item.textContent = value[counter];
-            digitRight.forEach((dgt, n) => {
-                if (n == i) {
-                    dgt.textContent = item.textContent;
-                }
-            })
-            digits.push(item.textContent);
-        });
-
-        setSuit();
-
-        const tempArray = [...digits].sort();
-
-        for (let i = 0; i < tempArray.length; i++) {
-            if (tempArray[i + 1] === tempArray[i]&& tempArray[i + 2] === tempArray[i + 1] && tempArray[i + 3] === tempArray[i + 2] && tempArray[i + 4] === tempArray[i + 3]) {
-                
-                console.log(`${tempArray[i]} found number`);
-                digits.length = 0;
-                executeCardForming();
-                
-            }
-        }
-
-  
-        getherCollection();
-    }
-
-    function setSuit() {
-        img.forEach((item) => {
-            const a = getNum(Object.keys(cardImgBySuit).length);
-            item.setAttribute('src', cardImgBySuit[a]);
-            item.setAttribute('alt', cardImgAltBySuit[a]);
-        });
-    }
-
-
-    function getNum(q) {
-        return Math.floor(Math.random()*q);
-    }
-
-    
-
-    function getherCollection() {
-        let sortedSpades,
-            sortedDiamonds,
-            sortedHearts,
-            sortedClubs;
-
-        checkSuit(clubs, sortedClubs, 'clubs');
-        checkSuit(diamonds, sortedDiamonds, 'diamonds');
-        checkSuit(hearts, sortedHearts, 'hearts');
-        checkSuit(spades, sortedSpades, 'spades');
-    }
-
-    
-
-    function checkSuit(suitArr, sortedArr, suitName) {
-        suitArr.length = 0;
-        for (let key of cardInnerElements) {
-            for (let x = 0; x < key.length; x++) {
-                if (key[0].getAttribute('class') == 'digit__left' && key[1].getAttribute('src') == `img/${suitName}.png`) {
-                    suitArr.push(key[0].textContent);
-                    break;
-                }
-            }
-        }
-
-        sortedArr = [...suitArr].sort();
-        
-        for (let i = 0; i < sortedArr.length; i++) {
-            if (sortedArr[i + 1] === sortedArr[i]) {
-
-                console.log(`${sortedArr[i]} found ${suitName}`);
-                suitArr.length = 0;
-                setSuit();
-                getherCollection();
-                break;
-            }
-        }
-
-    }
-
-
-    // handing cards
-
-    const checkBtn = document.querySelector('#check'),
-          raiseBtn = document.querySelector('#raise'),
-          foldBtn = document.querySelector('#fold');
-
-
-
-    raiseBtn.addEventListener('click', handAdditionalCard);
-    checkBtn.addEventListener('click', handRestCards);
-
-    function handRestCards() {
-        const hiddenCard = document.querySelectorAll('.card__last');
-
-        hiddenCard.forEach((card, i) => {
-            const container = card.querySelector('.card__container');
-            
-            switch (i) {
-                case 0:
-                    showCardContents(container, card, 6);
-                case 1:
-                    setTimeout(()=> showCardContents(container, card, 7), 500);
-            }
-        });
-
-        determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-    }
-
-    function handStartSet() {
-        const hiddenCard = document.querySelectorAll('[data-first]');
-
-        hiddenCard.forEach((card, i) => {
-            const container = card.querySelector('.card__container');
-
-            switch (i) {
-                case 0:
-                    showCardContents(container, card, 3);
-                case 1:
-                    setTimeout(()=> showCardContents(container, card, 4), 500);
-                case 2:
-                    setTimeout(()=> {
-                        showCardContents(container, card, 5);
-                        removeAttr();
-                    }, 1000);
-            }
-        });      
-    }
-
-    function handCardsToPlayers() {
-        const hiddenCard = document.querySelectorAll('[data-player]');
-              
-
-        hiddenCard.forEach((card, i) => {
-            const container = card.querySelector('.card__container');
-
-            switch (i) {
-                case 0:
-                    showCardContents(container, card, 1);
-                case 1:
-                    setTimeout(()=> showCardContents(container, card, 2), 500);
-                case 2:
-                    showCardContents(container, card, 8);
-                case 3:
-                    setTimeout(()=> showCardContents(container, card, 9), 500);
-                default:
-                    setTimeout(()=> handStartSet(), 1000); 
-            }
-        });
-        gameBtns.style.display = 'flex';
-        startBtnWrapper.style.display = 'none';
-    }
-
-
-    // +1 card
-
-
-    let counterAdditionalCard = 6;
-
-    function handAdditionalCard() {
-        const hiddenCard = document.querySelectorAll('.card__last');
-
-        if (hiddenCard.length < 2) {
-            determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-        }
-
-        hiddenCard.forEach((card, i) => {
-
-            if (i == 0) {
-                const container = card.querySelector('.card__container');
-                showCardContents(container, card, counterAdditionalCard);
-                card.classList.remove('card__last');
-                counterAdditionalCard++;
-            } else {
-                return;
-            }
-        });
-    }
-
-    //
-
-    function removeAttr() {
-        checkBtn.removeAttribute('disabled');
-        raiseBtn.removeAttribute('disabled');
-        foldBtn.removeAttribute('disabled');
-    }
-
-    function addAttr() {
-        checkBtn.setAttribute('disabled', '');
-        raiseBtn.setAttribute('disabled', '');
-        foldBtn.setAttribute('disabled', '');
-    }
-
-    //
-
-    function showCardContents(container, card, classElemNum) {
-        card.classList.add('card__appear');
-        card.classList.remove(`card__hidden_${classElemNum}`);
-        
-    }
-
-    // change img in hints
-
-    const emoji = document.querySelector('.hint-img');
-    let numOfEmoji = Math.floor(Math.random()*10);
-    emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
-
-
     // start tutorial
 
     const text = document.querySelector('.greating_text'),
           overlay = document.querySelector('.overlay'),
           modalWrapper = overlay.querySelector('.modal_wrapper'),
-          modalContent = overlay.querySelector('.modal_content'),
+        //   modalContent = overlay.querySelector('.modal_content'),
           highlightedItems = document.querySelectorAll('.highlight');
 
     let userName;
@@ -411,18 +189,261 @@ window.addEventListener('DOMContentLoaded', () => {
         return elem;
     }
 
+    // hand cards
+
+    executeCardForming();
+    
+    startBtn.addEventListener('click', handCardsToPlayers);
+
+    function executeCardForming() {
+
+        digits.length = 0;
+        int = 0;
+
+        digitLeft.forEach((item, i) => {
+            const counter = getNum(Object.keys(value).length);
+            item.textContent = value[counter];
+            digitRight.forEach((dgt, n) => {
+                if (n == i) {
+                    dgt.textContent = item.textContent;
+                }
+            })
+            digits.push(item.textContent);
+        });
+
+        setSuit();
+
+        const tempArray = [...digits].sort();
+
+        for (let i = 0; i < tempArray.length; i++) {
+            if (tempArray[i + 1] === tempArray[i]&& tempArray[i + 2] === tempArray[i + 1] && tempArray[i + 3] === tempArray[i + 2] && tempArray[i + 4] === tempArray[i + 3]) {
+                
+                console.log(`${tempArray[i]} found number`);
+                digits.length = 0;
+                executeCardForming();
+                
+            }
+        }
+
+        getherCollection();
+    }
+
+    function setSuit() {
+        img.forEach((item) => {
+            const a = getNum(Object.keys(cardImgBySuit).length);
+            item.setAttribute('src', cardImgBySuit[a]);
+            item.setAttribute('alt', cardImgAltBySuit[a]);
+        });
+    }
+
+
+    function getNum(q) {
+        return Math.floor(Math.random()*q);
+    }
+
+    
+
+    function getherCollection() {
+        let sortedSpades,
+            sortedDiamonds,
+            sortedHearts,
+            sortedClubs;
+
+        checkSuit(clubs, sortedClubs, 'clubs');
+        checkSuit(diamonds, sortedDiamonds, 'diamonds');
+        checkSuit(hearts, sortedHearts, 'hearts');
+        checkSuit(spades, sortedSpades, 'spades');
+    }
+
+    
+
+    function checkSuit(suitArr, sortedArr, suitName) {
+        suitArr.length = 0;
+        for (let key of cardInnerElements) {
+            for (let x = 0; x < key.length; x++) {
+                if (key[0].getAttribute('class') == 'digit__left' && key[1].getAttribute('src') == `img/${suitName}.png`) {
+                    suitArr.push(key[0].textContent);
+                    break;
+                }
+            }
+        }
+
+        sortedArr = [...suitArr].sort();
+        
+        for (let i = 0; i < sortedArr.length; i++) {
+            if (sortedArr[i + 1] === sortedArr[i]) {
+
+                console.log(`${sortedArr[i]} found ${suitName}`);
+                suitArr.length = 0;
+                setSuit();
+                getherCollection();
+                break;
+            }
+        }
+
+    }
+
+
+    // handing cards
+
+    const checkBtn = document.querySelector('#check'),
+          raiseBtn = document.querySelector('#raise'),
+          foldBtn = document.querySelector('#fold');
+
+
+
+    raiseBtn.addEventListener('click', () => {
+        handAdditionalCard();
+        const showOverlay = setTimeout(() => showRestartWindow(), 1000);
+    });
+    checkBtn.addEventListener('click', () => {
+        handRestCards();
+        const showOverlay = setTimeout(() => showRestartWindow(), 1000);       
+    });
+
+    function handRestCards() {
+        const hiddenCard = document.querySelectorAll('.card__last');
+
+        hiddenCard.forEach((card, i) => {
+            const container = card.querySelector('.card__container');
+            
+            switch (i) {
+                case 0:
+                    showCardContents(container, card, 6);
+                case 1:
+                    setTimeout(()=> showCardContents(container, card, 7), 500);
+            }
+        });
+
+        determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
+    }
+
+    function handStartSet() {
+        const hiddenCard = document.querySelectorAll('[data-first]');
+
+        hiddenCard.forEach((card, i) => {
+            const container = card.querySelector('.card__container');
+
+            switch (i) {
+                case 0:
+                    showCardContents(container, card, 3);
+                case 1:
+                    setTimeout(()=> showCardContents(container, card, 4), 500);
+                case 2:
+                    setTimeout(()=> {
+                        showCardContents(container, card, 5);
+                        removeAttr();
+                    }, 1000);
+            }
+        });
+        
+        
+    }
+
+    function showRestartWindow() {
+        overlay.innerHTML = `
+            <p class="overlay__info">Click anywhere to start the next hand</p>
+        `;
+        
+        overlay.classList.add('overlay_transparent');
+        overlay.style.display = 'block';
+
+        overlay.addEventListener('click', reload, {once: true});
+    }
+
+    function handCardsToPlayers() {
+        const hiddenCard = document.querySelectorAll('[data-player]');
+              
+
+        hiddenCard.forEach((card, i) => {
+            const container = card.querySelector('.card__container');
+
+            switch (i) {
+                case 0:
+                    showCardContents(container, card, 1);
+                case 1:
+                    setTimeout(()=> showCardContents(container, card, 2), 500);
+                case 2:
+                    showCardContents(container, card, 8);
+                case 3:
+                    setTimeout(()=> showCardContents(container, card, 9), 500);
+                default:
+                    setTimeout(()=> handStartSet(), 1000); 
+            }
+        });
+        gameBtns.style.display = 'flex';
+        startBtnWrapper.style.display = 'none';
+    }
+
+
+    // +1 card
+
+
+    let counterAdditionalCard = 6;
+
+    function handAdditionalCard() {
+        const hiddenCard = document.querySelectorAll('.card__last');
+
+        if (hiddenCard.length < 2) {
+            determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
+        }
+
+        hiddenCard.forEach((card, i) => {
+
+            if (i == 0) {
+                const container = card.querySelector('.card__container');
+                showCardContents(container, card, counterAdditionalCard);
+                card.classList.remove('card__last');
+                counterAdditionalCard++;
+            } else {
+                return;
+            }
+        });
+    }
+
+    //
+
+    function removeAttr() {
+        checkBtn.removeAttribute('disabled');
+        raiseBtn.removeAttribute('disabled');
+        foldBtn.removeAttribute('disabled');
+    }
+
+    function addAttr() {
+        checkBtn.setAttribute('disabled', '');
+        raiseBtn.setAttribute('disabled', '');
+        foldBtn.setAttribute('disabled', '');
+    }
+
+    //
+
+    function showCardContents(container, card, classElemNum) {
+        card.classList.add('card__appear');
+        card.classList.remove(`card__hidden_${classElemNum}`);   
+    }
+
+    // change img in hints
+
+    const emoji = document.querySelector('.hint-img');
+    let numOfEmoji = Math.floor(Math.random()*10);
+    emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
+
+
     // restart 
 
     const allCards = document.querySelectorAll('.card');
 
     foldBtn.addEventListener('click', () => {
-        modalContent.innerHTML=`
-            <h2 class="title_input">Would you like to fold?</h2>
-            <div class="buttons__wrapper_modal">
-                <button class="tutorial_btn reload">Yes</button>
-                <button class="tutorial_btn close">No</button>
+        overlay.innerHTML=`
+            <div class="modal">
+                <div class="modal_content">
+                    <h2 class="title_input">Would you like to fold?</h2>
+                    <div class="buttons__wrapper_modal">
+                        <button class="tutorial_btn reload">Yes</button>
+                        <button class="tutorial_btn close">No</button>
+                    </div>
+                </div>
             </div>
-            
         `;
         overlay.style.display = 'block';
 
@@ -436,24 +457,28 @@ window.addEventListener('DOMContentLoaded', () => {
         coreText.innerText = "Lorem ipsum dolores."
 
         reloadBtn.addEventListener('click', () => {
-            overlay.style.display = 'none';
-            startBtnWrapper.style.display = 'flex';
-            gameBtns.style.display = 'none';
-            addAttr();
-            executeCardForming();
-            allCards.forEach((card, i) => {
-                card.classList.remove('card__appear');
-                card.classList.add(`card__hidden_${i}`);
-                card.classList.remove('card__highlighted');
-            });
-
-            const lastCards = document.querySelectorAll('[data-class]');
-            lastCards.forEach(card => {
-                card.classList.add('card__last');
-                counterAdditionalCard = 6;
-            });
+            reload();
         });
     });
+
+    function reload() {
+        overlay.style.display = 'none';
+        startBtnWrapper.style.display = 'flex';
+        gameBtns.style.display = 'none';
+        addAttr();
+        executeCardForming();
+        allCards.forEach((card, i) => {
+            card.classList.remove('card__appear');
+            card.classList.add(`card__hidden_${i}`);
+            card.classList.remove('card__highlighted');
+        });
+
+        const lastCards = document.querySelectorAll('[data-class]');
+        lastCards.forEach(card => {
+            card.classList.add('card__last');
+            counterAdditionalCard = 6;
+        });
+    }
 
     // combinations
 
