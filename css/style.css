@@ -35,6 +35,7 @@
     text-align: center;
     padding-top: 180px;
     padding-right: 155px;
+    font-weight: 700;
     color: red;
     animation: puls 4s infinite;
 }
@@ -546,6 +547,10 @@ td {
 
 .hint__subtitle {
     margin-top: 10px;
+}
+
+.hint__subtitle u {
+    text-shadow: 0 0 5px #fff, 0 0 5px #fff;
 }
 
 .hint__text {

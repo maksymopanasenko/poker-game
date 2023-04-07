@@ -299,17 +299,22 @@ window.addEventListener('DOMContentLoaded', () => {
         handRestCards();       
     });
 
+
+    function useTimer(card, num, coef = 0) {
+        console.log('log')
+        setTimeout(()=> showCardContents(card, num), coef);
+    } 
+
     function handRestCards() {
         const hiddenCard = document.querySelectorAll('.card__last');
 
         hiddenCard.forEach((card, i) => {
-            const container = card.querySelector('.card__container');
             
             switch (i) {
                 case 0:
-                    showCardContents(container, card, 6);
+                    useTimer(card, 6);
                 case 1:
-                    setTimeout(()=> showCardContents(container, card, 7), 500);
+                    useTimer(card, 7, 500);
             }
         });
 
@@ -321,22 +326,17 @@ window.addEventListener('DOMContentLoaded', () => {
         const hiddenCard = document.querySelectorAll('[data-first]');
 
         hiddenCard.forEach((card, i) => {
-            const container = card.querySelector('.card__container');
 
             switch (i) {
                 case 0:
-                    showCardContents(container, card, 3);
+                    useTimer(card, 3);
                 case 1:
-                    setTimeout(()=> showCardContents(container, card, 4), 500);
+                    useTimer(card, 4, 500);
                 case 2:
-                    setTimeout(()=> {
-                        showCardContents(container, card, 5);
-                        removeAttr();
-                    }, 1000);
+                    useTimer(card, 5, 1000);
+                    removeAttr();
             }
-        });
-        
-        
+        });      
     }
 
     function showRestartWindow() {
@@ -355,17 +355,15 @@ window.addEventListener('DOMContentLoaded', () => {
               
 
         hiddenCard.forEach((card, i) => {
-            const container = card.querySelector('.card__container');
-
             switch (i) {
                 case 0:
-                    showCardContents(container, card, 1);
+                    useTimer(card, 1);
                 case 1:
-                    setTimeout(()=> showCardContents(container, card, 2), 500);
+                    useTimer(card, 2, 500);
                 case 2:
-                    showCardContents(container, card, 8);
+                    useTimer(card, 8);
                 case 3:
-                    setTimeout(()=> showCardContents(container, card, 9), 500);
+                    useTimer(card, 9, 500);
                 default:
                     setTimeout(()=> handStartSet(), 1000); 
             }
@@ -391,8 +389,7 @@ window.addEventListener('DOMContentLoaded', () => {
         hiddenCard.forEach((card, i) => {
 
             if (i == 0) {
-                const container = card.querySelector('.card__container');
-                showCardContents(container, card, counterAdditionalCard);
+                showCardContents(card, counterAdditionalCard);
                 card.classList.remove('card__last');
                 counterAdditionalCard++;
             } else {
@@ -417,7 +414,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //
 
-    function showCardContents(container, card, classElemNum) {
+    function showCardContents(card, classElemNum) {
         card.classList.add('card__appear');
         card.classList.remove(`card__hidden_${classElemNum}`);   
     }
