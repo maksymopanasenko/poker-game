@@ -16,12 +16,27 @@
     background: none;
 }
 
+@keyframes puls {
+    0% {
+        font-size: 25px;
+        text-shadow: 0px 0px 15px #000;
+    }
+    50% {
+        font-size: 22px;
+        text-shadow: 0px 0px 2px #000;
+    }
+    to {
+        font-size: 25px;        
+        text-shadow: 0px 0px 15px #000;
+    }
+}
+
 .overlay__info {
     text-align: center;
-    font-size: 25px;
     padding-top: 180px;
     padding-right: 155px;
     color: red;
+    animation: puls 4s infinite;
 }
 
 .modal {

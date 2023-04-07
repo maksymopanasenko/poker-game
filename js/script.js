@@ -294,11 +294,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     raiseBtn.addEventListener('click', () => {
         handAdditionalCard();
-        const showOverlay = setTimeout(() => showRestartWindow(), 1000);
     });
     checkBtn.addEventListener('click', () => {
-        handRestCards();
-        const showOverlay = setTimeout(() => showRestartWindow(), 1000);       
+        handRestCards();       
     });
 
     function handRestCards() {
@@ -315,6 +313,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        addAttr();
         determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
     }
 
@@ -385,6 +384,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const hiddenCard = document.querySelectorAll('.card__last');
 
         if (hiddenCard.length < 2) {
+            addAttr();
             determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
         }
 
@@ -548,6 +548,9 @@ window.addEventListener('DOMContentLoaded', () => {
             // need to develop cases tree
             // need to solve and develop with high card
         }
+        const showOverlay = setTimeout(() => showRestartWindow(), 2000);
+
+        // bug after multiclick
     }
 
     function compareEquals(matches) {
