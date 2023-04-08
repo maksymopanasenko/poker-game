@@ -5,6 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const digitLeft = document.querySelectorAll('.digit__left'),
           digitRight = document.querySelectorAll('.digit__right'),
           img = document.querySelectorAll('.card img'),
+          emoji = document.querySelector('.hint-img'),
           startBtn = document.querySelector('.user-btn'),
           startBtnWrapper = document.querySelector('.wrapper__btn'),
           gameBtns = document.querySelector('.buttons__wrapper'),
@@ -12,7 +13,6 @@ window.addEventListener('DOMContentLoaded', () => {
           card = document.querySelectorAll('.card__container'),
           subtitleText = document.querySelector('.hint__subtitle'),
           coreText = document.querySelector('.hint__text');
-
 
     const digits = [];
 
@@ -33,10 +33,10 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const cardImgBySuit = {
-        0: 'img/clubs.png',
-        1: 'img/diamonds.png',
-        2: 'img/hearts.png',
-        3: 'img/spades.png'
+        0: 'img/cards/clubs.png',
+        1: 'img/cards/diamonds.png',
+        2: 'img/cards/hearts.png',
+        3: 'img/cards/spades.png'
     };
 
     const cardImgAltBySuit = {
@@ -55,8 +55,6 @@ window.addEventListener('DOMContentLoaded', () => {
     let int = 0,
         key = 0;
 
-
-
     card.forEach((i) => {
         cardInnerElements.push(i.children);
     });
@@ -66,15 +64,14 @@ window.addEventListener('DOMContentLoaded', () => {
           hearts = [],
           spades = [];
 
-
     // variables above !!!!!!!!!!!!!!!!!!
 
     // start tutorial
 
     const text = document.querySelector('.greating_text'),
           overlay = document.querySelector('.overlay'),
+          photo = overlay.querySelector('.my_person'),
           modalWrapper = overlay.querySelector('.modal_wrapper'),
-        //   modalContent = overlay.querySelector('.modal_content'),
           highlightedItems = document.querySelectorAll('.highlight');
 
     let userName;
@@ -124,8 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
         modalWrapper.innerHTML = '';
         modalWrapper.append(changeContentToInput());
 
-        const input = modalWrapper.querySelector('input');
-        input.focus();
+        modalWrapper.querySelector('input').focus();
 
         const dataText = document.querySelector('.user_input');
         // console.log(dataText);
@@ -133,7 +129,6 @@ window.addEventListener('DOMContentLoaded', () => {
             userName = dataText.value;
         });
     }
-
      
     //
 
@@ -149,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //
 
     function chooseHighlight(counter = 0, button) {
-        const text = {
+        const sentences = {
             0: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit.',
             1: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis maiores sunt, iusto aliquam porro dolore minus, voluptas nemo perferendis.',
             2: 'Perspiciatis maiores sunt, iusto aliquam porro dolore minus, voluptas nemo perferendis.',
@@ -160,7 +155,7 @@ window.addEventListener('DOMContentLoaded', () => {
             
             if (i == counter) {
                 item.classList.add('styled');
-                text.innerText = text[i];
+                text.innerText = sentences[i];
                 
             } else {
                 item.classList.remove('styled');
@@ -179,6 +174,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //
 
     function changeContentToInput() {
+        photo.remove();
         const elem = document.createElement('div');
 
         elem.innerHTML = `
@@ -201,7 +197,7 @@ window.addEventListener('DOMContentLoaded', () => {
         int = 0;
 
         digitLeft.forEach((item, i) => {
-            const counter = getNum(Object.keys(value).length);
+            const counter = getRandomNum(Object.keys(value).length);
             item.textContent = value[counter];
             digitRight.forEach((dgt, n) => {
                 if (n == i) {
@@ -220,8 +216,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 
                 console.log(`${tempArray[i]} found number`);
                 digits.length = 0;
-                executeCardForming();
-                
+                executeCardForming();  
             }
         }
 
@@ -230,14 +225,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function setSuit() {
         img.forEach((item) => {
-            const a = getNum(Object.keys(cardImgBySuit).length);
+            const a = getRandomNum(Object.keys(cardImgBySuit).length);
             item.setAttribute('src', cardImgBySuit[a]);
             item.setAttribute('alt', cardImgAltBySuit[a]);
         });
     }
 
 
-    function getNum(q) {
+    function getRandomNum(q) {
         return Math.floor(Math.random()*q);
     }
 
@@ -255,13 +250,11 @@ window.addEventListener('DOMContentLoaded', () => {
         checkSuit(spades, sortedSpades, 'spades');
     }
 
-    
-
     function checkSuit(suitArr, sortedArr, suitName) {
         suitArr.length = 0;
         for (let key of cardInnerElements) {
             for (let x = 0; x < key.length; x++) {
-                if (key[0].getAttribute('class') == 'digit__left' && key[1].getAttribute('src') == `img/${suitName}.png`) {
+                if (key[0].getAttribute('class') == 'digit__left' && key[1].getAttribute('src') == `img/cards/${suitName}.png`) {
                     suitArr.push(key[0].textContent);
                     break;
                 }
@@ -280,17 +273,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             }
         }
-
     }
-
 
     // handing cards
 
     const checkBtn = document.querySelector('#check'),
           raiseBtn = document.querySelector('#raise'),
           foldBtn = document.querySelector('#fold');
-
-
 
     raiseBtn.addEventListener('click', () => {
         handAdditionalCard();
@@ -299,9 +288,8 @@ window.addEventListener('DOMContentLoaded', () => {
         handRestCards();       
     });
 
-
     function useTimer(card, num, coef = 0) {
-        console.log('log')
+        // console.log('log')
         setTimeout(()=> showCardContents(card, num), coef);
     } 
 
@@ -351,8 +339,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function handCardsToPlayers() {
-        const hiddenCard = document.querySelectorAll('[data-player]');
-              
+        const hiddenCard = document.querySelectorAll('[data-player]');   
 
         hiddenCard.forEach((card, i) => {
             switch (i) {
@@ -368,13 +355,12 @@ window.addEventListener('DOMContentLoaded', () => {
                     setTimeout(()=> handStartSet(), 1000); 
             }
         });
+
         gameBtns.style.display = 'flex';
         startBtnWrapper.style.display = 'none';
     }
 
-
     // +1 card
-
 
     let counterAdditionalCard = 6;
 
@@ -421,10 +407,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // change img in hints
 
-    const emoji = document.querySelector('.hint-img');
-    let numOfEmoji = Math.floor(Math.random()*10);
-    emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
-
+    function changeEmoji() {
+        let numOfEmoji = Math.floor(Math.random()*10);
+        emoji.src = `img/emoji/emoji${numOfEmoji}.png`;
+    }
 
     // restart 
 
@@ -451,7 +437,7 @@ window.addEventListener('DOMContentLoaded', () => {
         
         key = 0;
         subtitleText.innerText = "Lorem";
-        coreText.innerText = "Lorem ipsum dolores."
+        coreText.innerText = "Lorem ipsum dolores.";
 
         reloadBtn.addEventListener('click', () => {
             reload();
@@ -494,7 +480,7 @@ window.addEventListener('DOMContentLoaded', () => {
             coreText.innerText = "You won!";
         } else if (pointsComp > pointsPlayer) {
             highlightAndDescribeCombination(comp.slice(1));
-            coreText.innerText = "Oponent won!";
+            coreText.innerText = "Opponent won!";
         } else {
             
             const playerSum = compareEquals(matchesPlayer);
@@ -505,7 +491,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 coreText.innerText = "You won!";
             } else if (compSum > playerSum) {
                 highlightAndDescribeCombination(comp.slice(1));
-                coreText.innerText = "Oponent won!";
+                coreText.innerText = "Opponent won!";
             } else {
                 if (!matchesPlayer.length && !matchesComp.length) {
 
@@ -522,7 +508,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     } else if (compHigh > playerHigh) {
                         console.log('compHigh')
                         highlightAndDescribeCombination(comp.slice(1));
-                        coreText.innerText = "Oponent won!";
+                        coreText.innerText = "Opponent won!";
                     } else {
                         // console.log(checkHighCard())
                         // function checkHighCard() {
@@ -545,9 +531,9 @@ window.addEventListener('DOMContentLoaded', () => {
             // need to develop cases tree
             // need to solve and develop with high card
         }
+        
+        changeEmoji();
         const showOverlay = setTimeout(() => showRestartWindow(), 2000);
-
-        // bug after multiclick
     }
 
     function compareEquals(matches) {
@@ -557,7 +543,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         return counter;
     }
-
 
     function showMatches(player) {
         let pointsCounter = 0;

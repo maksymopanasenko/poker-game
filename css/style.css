@@ -25,7 +25,7 @@
         font-size: 22px;
         text-shadow: 0px 0px 2px #000;
     }
-    to {
+    100% {
         font-size: 25px;        
         text-shadow: 0px 0px 15px #000;
     }
@@ -33,7 +33,7 @@
 
 .overlay__info {
     text-align: center;
-    padding-top: 180px;
+    padding-top: 200px;
     padding-right: 155px;
     font-weight: 700;
     color: red;
@@ -78,7 +78,7 @@
     display: block;
 }
 
-.my_persone {
+.my_person {
     display: block;
     height: 260px;
     width: auto;
@@ -86,7 +86,6 @@
     right: 0;
     top: 132px;
 }
-
 
 .buttons__wrapper_tutorial {
     display: flex;
@@ -246,52 +245,50 @@
 }
 
 .card__hidden_1 {
-    transform: translate(-546px, 192px);
+    transform: translate(-522px, 259px);
     box-shadow: none;
     z-index: -1;
 }
-
 .card__hidden_2 {
-    transform: translate(-606px, 192px);
+    transform: translate(-583px, 259px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_8 {
-    transform: translate(-546px, -228px);
+    transform: translate(-522px, -162px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_9 {
-    transform: translate(-606px, -228px);
+    transform: translate(-582px, -162px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_3 {
-    transform: translate(-373px, -20px);
+    transform: translate(-353px, 49px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_4 {
-    transform: translate(-473px, -20px);
+    transform: translate(-453px, 49px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_5 {
-    transform: translate(-575px, -20px);
+    transform: translate(-553px, 49px);
     box-shadow: none;
     z-index: -1;
 }
-
 .card__hidden_6 {
-    transform: translate(-675px, -20px);
+    transform: translate(-653px, 49px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_7 {
-    transform: translate(-775px, -20px);
+    transform: translate(-753px, 49px);
     box-shadow: none;
     z-index: -1;
 }
@@ -306,7 +303,7 @@
     left: -3px;
     top: 0.5px;
     box-shadow: none;
-    background: url('../img/side.png') no-repeat;
+    background: url('../img/cards/side.png') no-repeat;
     background-size: cover;
     z-index: 10;
     background-position: center;
