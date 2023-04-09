@@ -225,9 +225,22 @@
     border: 1px solid rgba(63, 60, 60, 0.568);
 }
 
+/* @keyframes showing {
+    0% {
+        transform: translate(-522px, 259px);
+    }
+    50% {
+        transform: translate(-522px, 259px);
+    }
+    100% {
+        transform: translate(0);
+    }
+} */
+
 .card__appear {
     transform: translate(0);
     transition: .8s all;
+    /* animation: showing 2s; */
 }
 
 .card__left {
@@ -308,7 +321,6 @@
     z-index: 10;
     background-position: center;
 }
-
 .card__wrapper1 {
     position: relative;
     left: -2.5px;
@@ -344,7 +356,6 @@
 
 
 .enemy__cards {
-    /* background: chartreuse; */
     height: 120px;
     display: flex;
     justify-content: center;
@@ -353,7 +364,6 @@
 
 
 .middle__cards {
-    /* background: chartreuse; */
     height: 300px;
     display: flex;
     justify-content: space-around;

@@ -231,12 +231,9 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     function getRandomNum(q) {
         return Math.floor(Math.random()*q);
     }
-
-    
 
     function getherCollection() {
         let sortedSpades,
@@ -284,6 +281,7 @@ window.addEventListener('DOMContentLoaded', () => {
     raiseBtn.addEventListener('click', () => {
         handAdditionalCard();
     });
+
     checkBtn.addEventListener('click', () => {
         handRestCards();       
     });
@@ -292,51 +290,6 @@ window.addEventListener('DOMContentLoaded', () => {
         // console.log('log')
         setTimeout(()=> showCardContents(card, num), coef);
     } 
-
-    function handRestCards() {
-        const hiddenCard = document.querySelectorAll('.card__last');
-
-        hiddenCard.forEach((card, i) => {
-            
-            switch (i) {
-                case 0:
-                    useTimer(card, 6);
-                case 1:
-                    useTimer(card, 7, 500);
-            }
-        });
-
-        addAttr();
-        determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-    }
-
-    function handStartSet() {
-        const hiddenCard = document.querySelectorAll('[data-first]');
-
-        hiddenCard.forEach((card, i) => {
-
-            switch (i) {
-                case 0:
-                    useTimer(card, 3);
-                case 1:
-                    useTimer(card, 4, 500);
-                case 2:
-                    useTimer(card, 5, 1000);
-                    removeAttr();
-            }
-        });      
-    }
-
-    function showRestartWindow() {
-        overlay.innerHTML = `
-            <p class="overlay__info">Click anywhere to start the next hand</p>
-        `;
-        
-        overlay.classList.add('overlay_transparent');
-        overlay.style.display = 'block';
-
-        overlay.addEventListener('click', reload, {once: true});
-    }
 
     function handCardsToPlayers() {
         const hiddenCard = document.querySelectorAll('[data-player]');   
@@ -358,6 +311,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
         gameBtns.style.display = 'flex';
         startBtnWrapper.style.display = 'none';
+    }
+
+    function handStartSet() {
+        const hiddenCard = document.querySelectorAll('[data-first]');
+
+        hiddenCard.forEach((card, i) => {
+
+            switch (i) {
+                case 0:
+                    useTimer(card, 3);
+                case 1:
+                    useTimer(card, 4, 500);
+                case 2:
+                    useTimer(card, 5, 1000);
+                    removeAttr();
+            }
+        });      
     }
 
     // +1 card
@@ -382,6 +352,36 @@ window.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         });
+    }
+
+    function handRestCards() {
+        const hiddenCard = document.querySelectorAll('.card__last');
+
+        hiddenCard.forEach((card, i) => {
+            
+            switch (i) {
+                case 0:
+                    useTimer(card, 6);
+                case 1:
+                    useTimer(card, 7, 500);
+            }
+        });
+
+        addAttr();
+        determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
+    }
+
+    // restart window
+    
+    function showRestartWindow() {
+        overlay.innerHTML = `
+            <p class="overlay__info">Click anywhere to start the next hand</p>
+        `;
+        
+        overlay.classList.add('overlay_transparent');
+        overlay.style.display = 'block';
+
+        overlay.addEventListener('click', reload, {once: true});
     }
 
     //
@@ -467,8 +467,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function determineWinner(player, comp) {
 
-        const [pointsPlayer, valuesP, matchesPlayer, cardsP, highestPlayer] = player;
-        const [pointsComp, valuesC, matchesComp, cardsC, highestComp] = comp;
+        const [pointsPlayer, valuesP, matchesPlayer, cardsP, highestPlayer, playersCards] = player;
+        const [pointsComp, valuesC, matchesComp, cardsC, highestComp, compsCards] = comp;
 
         console.log(`You scored with ${pointsPlayer} points`)
         console.log(`Computer scored with ${pointsComp} points`)
@@ -493,43 +493,22 @@ window.addEventListener('DOMContentLoaded', () => {
                 highlightAndDescribeCombination(comp.slice(1));
                 coreText.innerText = "Opponent won!";
             } else {
-                if (!matchesPlayer.length && !matchesComp.length) {
+                const playersTotal = compareEquals(playersCards);
+                const compsTotal = compareEquals(compsCards);
 
-                    const playerHigh = compareEquals(highestPlayer);
-                    const compHigh = compareEquals(highestComp);
-                    // console.log(highestPlayer)
-                    // console.log(highestComp)
-                    // console.log(playerHigh)
-
-                    if (playerHigh > compHigh) {
-                        console.log('playerHigh')
-                        highlightAndDescribeCombination(player.slice(1));
-                        coreText.innerText = "You won!";
-                    } else if (compHigh > playerHigh) {
-                        console.log('compHigh')
-                        highlightAndDescribeCombination(comp.slice(1));
-                        coreText.innerText = "Opponent won!";
-                    } else {
-                        // console.log(checkHighCard())
-                        // function checkHighCard() {
-                        //     const onwCardsPlayer = document.querySelectorAll('[data-card=player]');
-                        //     const onwCardsComp = document.querySelectorAll('[data-card=comp]');
-                        //     return onwCardsComp
-                        // }
-
-                        highlightAndDescribeCombination(comp.slice(1));
-                        console.log('High in dev');
-                    }
-                } else {
-                    highlightAndDescribeCombination(comp.slice(1));
+                if (playersTotal > compsTotal) {
                     highlightAndDescribeCombination(player.slice(1));
-
-                    coreText.innerText = "This is a draw!";
-                    console.log('draw');
-                }
+                    coreText.innerText = "You won!";
+                } else if (compsTotal > playersTotal) {
+                    highlightAndDescribeCombination(comp.slice(1));
+                    coreText.innerText = "Opponent won!";
+                } else {
+                    highlightAndDescribeCombination(player.slice(1));
+                    highlightAndDescribeCombination(comp.slice(1));
+                    coreText.innerText = "Your cards are the same. It is definitely a draw!";
+                }    
             }
             // need to develop cases tree
-            // need to solve and develop with high card
         }
         
         changeEmoji();
@@ -547,7 +526,7 @@ window.addEventListener('DOMContentLoaded', () => {
     function showMatches(player) {
         let pointsCounter = 0;
 
-        const [matches, cardValueEntries, arrCardsValues, arrCards] = getMatches(player);
+        const [matches, cardValueEntries, arrCardsValues, arrCards, playersCards] = getMatches(player);
 
         if (matches.length == 3) {
             pointsCounter += 4;
@@ -570,7 +549,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const highestCard = [];
         highestCard.push(detectHighest(cardValueEntries, arrCardsValues).pop());
         const dataArr = [];
-        dataArr.push(pointsCounter, arrCardsValues, matches, arrCards, highestCard);
+        dataArr.push(pointsCounter, arrCardsValues, matches, arrCards, highestCard, playersCards);
 
         return dataArr;
     };
@@ -581,10 +560,12 @@ window.addEventListener('DOMContentLoaded', () => {
         const cardValueEntries = Object.entries(value);
         
         const arrCards = [...playersCards, ...middleCards];
+        const playersCardsArray = getCardValues([...playersCards]);
 
         const arrCardsValues = getCardValues(arrCards);
 
         const sortedCardsValues = detectHighest(cardValueEntries, arrCardsValues);
+        const playersCardsValues = detectHighest(cardValueEntries, playersCardsArray);
 
         const matches = sortedCardsValues.filter((item, a) => {
             return sortedCardsValues.some((other, b) => {
@@ -608,7 +589,7 @@ window.addEventListener('DOMContentLoaded', () => {
             cutMatches.push(...matches);
         }        
 
-        return [cutMatches, cardValueEntries, arrCardsValues, arrCards];
+        return [cutMatches, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
     }
 
     function detectHighest(cardValueEntries, arrCardsValues) {
@@ -655,7 +636,7 @@ window.addEventListener('DOMContentLoaded', () => {
             setHighlight(arrCardsValues, matches, arrCards); 
 
             if (matches.length == 3) {
-                subtitleText.innerHTML = "That are <u>3 of a kind</u>!";
+                subtitleText.innerHTML = "That is <u>3 of a kind</u>!";
             } else if (matches.length == 2) {
                 subtitleText.innerHTML = "That's a <u>PAIR</u>!";
             } else if (matches.length == 5 || matches.length == 7) {
@@ -664,7 +645,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
                     subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!"; 
                 } else {
-                    subtitleText.innerHTML = "That are <u>TWO PAIRS</u>!";
+                    subtitleText.innerHTML = "That is <u>TWO PAIRS</u>!";
                 }
             }
         }
