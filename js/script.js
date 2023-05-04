@@ -97,7 +97,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     return
                 } else {
                     overlay.style.display = 'none';
-                    document.querySelector('.player').innerText = userName;
+                    document.querySelector('.stats__heading_player').innerText = userName;
                     document.querySelector('.user_name').innerText = userName;   
                     startBtn.removeAttribute('disabled');        
                     counter = 0;
@@ -280,14 +280,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
     raiseBtn.addEventListener('click', () => {
         handAdditionalCard();
+        increaseScore();
     });
 
     checkBtn.addEventListener('click', () => {
-        handRestCards();       
+        handRestCards();
+        increaseScore();
     });
 
+    function increaseScore() {       
+        const textValue = coreText.innerHTML;
+        const playerScore = document.querySelectorAll('.stats__player .stats__result');
+        const compScore = document.querySelectorAll('.stats__computer .stats__result');
+
+        switch (textValue) {
+            case 'Opponent won!':
+                compScore[0].innerHTML++;
+                break;
+            case 'You won!':
+                playerScore[0].innerHTML++;
+                break;
+            case 'Your cards are the same. It is definitely a draw!':
+                compScore[0].innerHTML++;
+                playerScore[0].innerHTML++;
+                break;
+        }
+    }
+    
     function useTimer(card, num, coef = 0) {
-        // console.log('log')
         setTimeout(()=> showCardContents(card, num), coef);
     } 
 
@@ -461,6 +481,9 @@ window.addEventListener('DOMContentLoaded', () => {
             card.classList.add('card__last');
             counterAdditionalCard = 6;
         });
+
+        
+        coreText.innerHTML = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!';
     }
 
     // combinations
