@@ -8,11 +8,16 @@ window.addEventListener('DOMContentLoaded', () => {
           emoji = document.querySelector('.hint-img'),
           startBtn = document.querySelector('.user-btn'),
           startBtnWrapper = document.querySelector('.wrapper__btn'),
+          controlBtns = document.querySelector('.control__buttons'),
           gameBtns = document.querySelector('.buttons__wrapper'),
           tutorialBtns = document.querySelector('.buttons__wrapper_tutorial'),
           card = document.querySelectorAll('.card__container'),
           subtitleText = document.querySelector('.hint__subtitle'),
           coreText = document.querySelector('.hint__text');
+    
+    const playersC = document.querySelectorAll('[data-player]');
+    const middles = document.querySelectorAll('[data-card="middle"]');
+    const hiddenCard = [...playersC, ...middles];
 
     const digits = [];
 
@@ -46,14 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
         3: 'spades'
     };
 
-    const playerResult = {
-        player: 0,
-        comp: 0
-    }
-
     let cardInnerElements = [];
-    let int = 0,
-        key = 0;
 
     card.forEach((i) => {
         cardInnerElements.push(i.children);
@@ -188,13 +186,10 @@ window.addEventListener('DOMContentLoaded', () => {
     // hand cards
 
     executeCardForming();
-    
-    startBtn.addEventListener('click', handCardsToPlayers);
 
     function executeCardForming() {
 
         digits.length = 0;
-        int = 0;
 
         digitLeft.forEach((item, i) => {
             const counter = getRandomNum(Object.keys(value).length);
@@ -278,16 +273,6 @@ window.addEventListener('DOMContentLoaded', () => {
           raiseBtn = document.querySelector('#raise'),
           foldBtn = document.querySelector('#fold');
 
-    raiseBtn.addEventListener('click', () => {
-        handAdditionalCard();
-        increaseScore();
-    });
-
-    checkBtn.addEventListener('click', () => {
-        handRestCards();
-        increaseScore();
-    });
-
     function increaseScore() {       
         const textValue = coreText.innerHTML;
         const playerScore = document.querySelectorAll('.stats__player .stats__result');
@@ -306,90 +291,88 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
         }
     }
-    
-    function useTimer(card, num, coef = 0) {
-        setTimeout(()=> showCardContents(card, num), coef);
-    } 
 
-    function handCardsToPlayers() {
-        const hiddenCard = document.querySelectorAll('[data-player]');   
+    printArrayOnClick(hiddenCard, controlBtns);
 
-        hiddenCard.forEach((card, i) => {
-            switch (i) {
-                case 0:
-                    useTimer(card, 1);
-                case 1:
-                    useTimer(card, 2, 500);
-                case 2:
-                    useTimer(card, 8);
-                case 3:
-                    useTimer(card, 9, 500);
-                default:
-                    setTimeout(()=> handStartSet(), 1000); 
-            }
-        });
-
-        gameBtns.style.display = 'flex';
-        startBtnWrapper.style.display = 'none';
-    }
-
-    function handStartSet() {
-        const hiddenCard = document.querySelectorAll('[data-first]');
-
-        hiddenCard.forEach((card, i) => {
-
-            switch (i) {
-                case 0:
-                    useTimer(card, 3);
-                case 1:
-                    useTimer(card, 4, 500);
-                case 2:
-                    useTimer(card, 5, 1000);
-                    removeAttr();
-            }
-        });      
-    }
-
-    // +1 card
-
-    let counterAdditionalCard = 6;
-
-    function handAdditionalCard() {
-        const hiddenCard = document.querySelectorAll('.card__last');
-
-        if (hiddenCard.length < 2) {
+    function printArrayOnClick (array, btn) {
+        let index = 0;
+        let intervalId;
+      
+        const print = () => {
+        //   console.log(index);
+          showCardContents(array[index], index+1)
+          index++;
+          addAttr();
+      
+          if (index === 4 || index === 7 || index === 8) {
+            clearInterval(intervalId);
+            intervalId = null;
+            removeAttr();
+            
+          } else if (index >= array.length) {
+            clearInterval(intervalId);
+            intervalId = null;
+            index = 0;
             addAttr();
             determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-        }
-
-        hiddenCard.forEach((card, i) => {
-
-            if (i == 0) {
-                showCardContents(card, counterAdditionalCard);
-                card.classList.remove('card__last');
-                counterAdditionalCard++;
-            } else {
-                return;
+            increaseScore();
+          }
+        };
+      
+        const handleClick = () => {
+          if (!intervalId) {
+            intervalId = setInterval(print, 500);
+          } else {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+        };
+      
+        btn.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target && target.classList.contains('start-btn')) {
+                handleClick();
+                removeAttr();
+                gameBtns.style.display = 'flex';
+                startBtnWrapper.style.display = 'none';
             }
-        });
-    }
-
-    function handRestCards() {
-        const hiddenCard = document.querySelectorAll('.card__last');
-
-        hiddenCard.forEach((card, i) => {
             
-            switch (i) {
-                case 0:
-                    useTimer(card, 6);
-                case 1:
-                    useTimer(card, 7, 500);
+            if (target && target.classList.contains('raise-btn') || target.classList.contains('check-btn')) {
+                handleClick()
+            }
+
+            if (target && target.classList.contains('fold-btn')) {
+                overlay.innerHTML=`
+                    <div class="modal">
+                        <div class="modal_content">
+                            <h2 class="title_input">Would you like to fold?</h2>
+                            <div class="buttons__wrapper_modal">
+                                <button class="tutorial_btn reload">Yes</button>
+                                <button class="tutorial_btn close">No</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        
+                overlay.style.display = 'block';
+        
+                const reloadBtn = document.querySelector('.reload'),
+                    close = document.querySelector('.close');
+                
+                close.addEventListener('click', () => {
+                    overlay.style.display = 'none';
+                });
+                
+                subtitleText.innerText = "Lorem";
+                coreText.innerText = "Lorem ipsum dolores.";
+        
+                reloadBtn.addEventListener('click', () => {
+                    reload();
+                    index = 0;
+                });
             }
         });
-
-        addAttr();
-        determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-    }
+      };
 
     // restart window
     
@@ -434,54 +417,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // restart 
 
-    const allCards = document.querySelectorAll('.card');
-
-    foldBtn.addEventListener('click', () => {
-        overlay.innerHTML=`
-            <div class="modal">
-                <div class="modal_content">
-                    <h2 class="title_input">Would you like to fold?</h2>
-                    <div class="buttons__wrapper_modal">
-                        <button class="tutorial_btn reload">Yes</button>
-                        <button class="tutorial_btn close">No</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        overlay.style.display = 'block';
-
-        const reloadBtn = document.querySelector('.reload'),
-              close = document.querySelector('.close');
-        
-        close.addEventListener('click', () => overlay.style.display = 'none');
-        
-        key = 0;
-        subtitleText.innerText = "Lorem";
-        coreText.innerText = "Lorem ipsum dolores.";
-
-        reloadBtn.addEventListener('click', () => {
-            reload();
-        });
-    });
-
     function reload() {
         overlay.style.display = 'none';
         startBtnWrapper.style.display = 'flex';
         gameBtns.style.display = 'none';
-        addAttr();
         executeCardForming();
-        allCards.forEach((card, i) => {
+
+        hiddenCard.forEach((card, i) => {
             card.classList.remove('card__appear');
-            card.classList.add(`card__hidden_${i}`);
+            card.classList.add(`card__hidden_${i+1}`);
             card.classList.remove('card__highlighted');
         });
-
-        const lastCards = document.querySelectorAll('[data-class]');
-        lastCards.forEach(card => {
-            card.classList.add('card__last');
-            counterAdditionalCard = 6;
-        });
-
         
         coreText.innerHTML = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!';
     }
@@ -687,20 +633,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 
-
-
-
-
-
-    
-    
-    
-
-
-
-
-    
-    
 
 
 
