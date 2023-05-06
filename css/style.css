@@ -160,10 +160,67 @@
 
 .buttons__wrapper {
     display: none;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column;
+    position: relative;
+    height: 105px;
+}
+
+.buttons__holder {
+    display: flex;
+    justify-content: space-between;
     width: 380px;
     height: 70px;
+    margin-bottom: 15px;
+}
+
+.rate {
+    position: absolute;
+    right: 130px;
+    top: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #55d259;
+    height: 3em;
+    width: 3em;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Arial';
+    box-shadow: -1px 1px 5px rgb(22, 42, 16);
+    transition: .3s all;
+    cursor: pointer;
+    color: #fff;
+}
+
+.rate:hover {
+    background: #f08222;
+}
+
+.buttons__bar {
+    position: relative;
+    text-align: center;
+    display: none;
+}
+
+.buttons__bar_min {
+    position: absolute;
+    left: 15px;
+}
+
+.buttons__bar_max {
+    position: absolute;
+    right: 0;
+}
+
+.buttons__bar_min,
+.buttons__bar_max {
+    font-size: 14px;
+    color: #fff;
+}
+
+.buttons__bar input {
+    width: 80%;
 }
 
 .table__bg {
@@ -172,7 +229,7 @@
     align-items: center;
     background: rgb(53, 34, 5);
     width: 800px;
-    height: 600px;
+    height: 545px;
     border-radius: 30%;
     border: 2px solid rgba(0, 0, 0, 0.336);
     box-shadow: 0px 0px 4px rgb(146, 91, 28);
@@ -181,7 +238,7 @@
 .table__main {
     border-radius: 30%;
     background: rgb(20, 61, 7);
-    height: 550px;
+    height: 500px;
     width: 750px;
     border: 2px solid rgba(0, 0, 0, 0.418);
 }
@@ -225,22 +282,9 @@
     border: 1px solid rgba(63, 60, 60, 0.568);
 }
 
-/* @keyframes showing {
-    0% {
-        transform: translate(-522px, 259px);
-    }
-    50% {
-        transform: translate(-522px, 259px);
-    }
-    100% {
-        transform: translate(0);
-    }
-} */
-
 .card__appear {
     transform: translate(0);
     transition: .8s all;
-    /* animation: showing 2s; */
 }
 
 .card__left {
@@ -254,7 +298,6 @@
 .card__highlighted {
     box-shadow: 0px 0px 20px red;
     border: 1px solid red;
-    /* transform: scale(1.15); */
 }
 
 .card__hidden_1 {
@@ -352,9 +395,6 @@
     border: 1px solid rgba(63, 60, 60, 0.568);
 }
 
-
-
-
 .enemy__cards {
     height: 120px;
     display: flex;
@@ -362,9 +402,8 @@
     align-items: center;
 }
 
-
 .middle__cards {
-    height: 300px;
+    height: 250px;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -377,7 +416,6 @@
     align-items: center;
 }
 
-
 .slot {
     display: flex;
 }
@@ -389,16 +427,12 @@
     align-items: center;
 }
 
-
-
-
 .card__container img{
     width: 20px;
     height: 20px; 
     margin: 10px;
     margin-left: 19px;
 }
-
 
 .digit__left {
     display: flex;
@@ -450,10 +484,6 @@ button:active {
     transform: scale(0.9, 0.9)
 }
 
-
-
-
-
 .aside {
     height: 100vh;
     width: 300px;
@@ -503,8 +533,6 @@ table {
     border-collapse: collapse;
 }
 
-
-
 th {
     height: 30px;
     background-color: #709656;
@@ -530,7 +558,6 @@ td {
     font-weight: 700;
     color: #060606;
 }
-
 
 .hints {
     margin-top: 100px;
@@ -572,7 +599,6 @@ td {
     width: 80px;
     height: 80px;
 }
-
 
 .buttons__wrapper_modal {
     display: flex;

@@ -272,6 +272,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const checkBtn = document.querySelector('#check'),
           raiseBtn = document.querySelector('#raise'),
           foldBtn = document.querySelector('#fold');
+    const rateBtn = document.querySelector('.rate'),
+          bar = document.querySelector('.buttons__bar');
+
+    rateBtn.addEventListener('click', () => bar.style.display = 'block');
+    raiseBtn.addEventListener('click', () => bar.style.display = 'none');
 
     function increaseScore() {       
         const textValue = coreText.innerHTML;
@@ -335,13 +340,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 removeAttr();
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
-            }
-            
-            if (target && target.classList.contains('raise-btn') || target.classList.contains('check-btn')) {
-                handleClick()
-            }
-
-            if (target && target.classList.contains('fold-btn')) {
+            } else if (target && target.classList.contains('raise-btn')) {
+                handleClick();
+                calcChips();
+            } else if (target && target.classList.contains('check-btn')) {
+                handleClick();
+            } else if (target && target.classList.contains('fold-btn')) {
                 overlay.innerHTML=`
                     <div class="modal">
                         <div class="modal_content">
@@ -632,10 +636,34 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const rangeInput = document.querySelector('.button__range');
+    const rangeValue = document.querySelector('.rate__amount');
+
+    rangeInput.addEventListener('input', () => {
+        rangeValue.textContent = rangeInput.value;
+    });
 
 
+    const chipsPlayer = document.querySelector('.count_player');
 
+    rangeInput.max = chipsPlayer.innerHTML;
 
+    const observer = new MutationObserver(function(mutationsList) {
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                rangeInput.max = mutation.target.textContent;
+            }
+        }
+    });
+
+    const config = { childList: true };
+
+    observer.observe(chipsPlayer, config);
+
+    function calcChips() {
+        chipsPlayer.innerText -= parseInt(rangeValue.innerText);
+        rangeValue.textContent = 5;
+    }
 
 
 
