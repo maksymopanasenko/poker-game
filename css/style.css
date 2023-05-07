@@ -150,26 +150,27 @@
     height: 700px;
 }
 
+.control__buttons {
+    height: 105px;
+}
+
 .wrapper__btn {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 380px;
-    height: 70px;
 }
 
 .buttons__wrapper {
     display: none;
     flex-direction: column;
     position: relative;
-    height: 105px;
 }
 
 .buttons__holder {
     display: flex;
     justify-content: space-between;
     width: 380px;
-    height: 70px;
     margin-bottom: 15px;
 }
 

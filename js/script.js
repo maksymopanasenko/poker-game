@@ -278,21 +278,29 @@ window.addEventListener('DOMContentLoaded', () => {
     rateBtn.addEventListener('click', () => bar.style.display = 'block');
     raiseBtn.addEventListener('click', () => bar.style.display = 'none');
 
-    function increaseScore() {       
-        const textValue = coreText.innerHTML;
-        const playerScore = document.querySelectorAll('.stats__player .stats__result');
-        const compScore = document.querySelectorAll('.stats__computer .stats__result');
+    function increaseScore() {
+        const playerScore = document.querySelectorAll('.stats__player .stats__result'),
+              compScore = document.querySelectorAll('.stats__computer .stats__result');
 
-        switch (textValue) {
+        const addPoints = (winnner, looser) => {
+            winnner[0].innerHTML++;
+            looser[1].innerHTML++;
+            winnner[2].innerHTML++;
+            looser[2].innerHTML++;
+        }
+
+        switch (coreText.innerHTML) {
             case 'Opponent won!':
-                compScore[0].innerHTML++;
+                addPoints(compScore, playerScore);
                 break;
             case 'You won!':
-                playerScore[0].innerHTML++;
+                addPoints(playerScore, compScore);
                 break;
             case 'Your cards are the same. It is definitely a draw!':
                 compScore[0].innerHTML++;
                 playerScore[0].innerHTML++;
+                compScore[2].innerHTML++;
+                playerScore[2].innerHTML++;
                 break;
         }
     }
@@ -366,11 +374,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 close.addEventListener('click', () => {
                     overlay.style.display = 'none';
                 });
-                
-                subtitleText.innerText = "Lorem";
-                coreText.innerText = "Lorem ipsum dolores.";
         
-                reloadBtn.addEventListener('click', () => {
+                reloadBtn.addEventListener('click', () => {              
                     reload();
                     index = 0;
                 });
@@ -433,6 +438,7 @@ window.addEventListener('DOMContentLoaded', () => {
             card.classList.remove('card__highlighted');
         });
         
+        subtitleText.innerText = "Lorem";
         coreText.innerHTML = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!';
     }
 
