@@ -115,11 +115,21 @@
 
 .user_input {
     display: block;
-    width: 200px;
+    width: 220px;
     height: 40px;
     margin: 30px auto;
     padding: 5px 10px;
     font-size: 16px;
+}
+
+.user_input::placeholder {
+    color: red;
+}
+
+.user_input-label {
+    display: none;
+    color: red;
+    text-align: center;
 }
 
 .center {

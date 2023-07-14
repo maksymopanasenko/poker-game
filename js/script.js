@@ -73,37 +73,37 @@ window.addEventListener('DOMContentLoaded', () => {
           highlightedItems = document.querySelectorAll('.highlight');
 
     let userName;
+    let counter = 1;
 
     tutorialBtns.addEventListener('click', (e) => {
-        let counter = 1;
         const target = e.target;
+
+        if (target.className == 'tutorial_btn next') {
+            chooseHighlight(counter, target);
+            counter++;
+        }
+
         if (target && target.nodeName == "BUTTON" && target.className != 'tutorial_btn next') {
 
             if (target.classList.contains('start')) {
                 target.classList.remove('start');
                 target.innerText = 'Skip all';
                 addElementToDOM('.buttons__wrapper_tutorial', 'button', 'tutorial_btn', 'next', 'Next');
-                const newButton = document.querySelector('.next');
-                
                 chooseHighlight();
-                newButton.addEventListener('click', (e) => {
-                    chooseHighlight(counter, e.target);
-                    counter++;
-                });
             } else if (target.classList.contains('close')) {
+
                 if (!userName) {
-                    return
-                } else {
-                    overlay.style.display = 'none';
-                    document.querySelector('.stats__heading_player').innerText = userName;
-                    document.querySelector('.user_name').innerText = userName;   
-                    startBtn.removeAttribute('disabled');        
-                    counter = 0;
+                    document.querySelector('.user_input').placeholder = 'This field cannot be empty!';
+                    return false;
                 }
+                
+                overlay.style.display = 'none';
+                document.querySelector('.stats__heading_player').innerText = userName;
+                document.querySelector('.user_name').innerText = userName;   
+                startBtn.removeAttribute('disabled');
             } else {
                 highlightedItems.forEach(item => item.classList.remove('styled'));  
-                closeTutorial();      
-                counter = 0;   
+                closeTutorial();
                 const newButton = document.querySelector('.next');
                 newButton ? newButton.remove() : null;
                 target.classList.add('close');
@@ -122,7 +122,6 @@ window.addEventListener('DOMContentLoaded', () => {
         modalWrapper.querySelector('input').focus();
 
         const dataText = document.querySelector('.user_input');
-        // console.log(dataText);
         dataText.addEventListener('input', () => {
             userName = dataText.value;
         });
@@ -177,7 +176,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         elem.innerHTML = `
             <h2 class="title_input">Enter your name</h2>
-            <input type="text" class="user_input">
+            <input type="text" id="name" class="user_input">
         `;
 
         return elem;
@@ -662,9 +661,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const config = { childList: true };
-
-    observer.observe(chipsPlayer, config);
+    observer.observe(chipsPlayer, { childList: true });
 
     function calcChips() {
         chipsPlayer.innerText -= parseInt(rangeValue.innerText);
