@@ -312,50 +312,50 @@
 }
 
 .card__hidden_1 {
-    transform: translate(-522px, 259px);
+    transform: translate(-520px, 255px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_2 {
-    transform: translate(-583px, 259px);
+    transform: translate(-580px, 255px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_8 {
-    transform: translate(-522px, -162px);
+    transform: translate(-650px, 70px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_9 {
-    transform: translate(-582px, -162px);
+    transform: translate(-750px, 70px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_3 {
-    transform: translate(-353px, 49px);
+    transform: translate(-520px, -115px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_4 {
-    transform: translate(-453px, 49px);
+    transform: translate(-580px, -115px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_5 {
-    transform: translate(-553px, 49px);
+    transform: translate(-350px, 70px);
     box-shadow: none;
     z-index: -1;
 }
 .card__hidden_6 {
-    transform: translate(-653px, 49px);
+    transform: translate(-450px, 70px);
     box-shadow: none;
     z-index: -1;
 }
 
 .card__hidden_7 {
-    transform: translate(-753px, 49px);
+    transform: translate(-550px, 70px);
     box-shadow: none;
     z-index: -1;
 }

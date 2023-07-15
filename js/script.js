@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const digits = [];
 
-    const value = {
+    const values = {
         0: '2',
         1: '3',
         2: '4',
@@ -191,8 +191,8 @@ window.addEventListener('DOMContentLoaded', () => {
         digits.length = 0;
 
         digitLeft.forEach((item, i) => {
-            const counter = getRandomNum(Object.keys(value).length);
-            item.textContent = value[counter];
+            const counter = getRandomNum(Object.keys(values).length);
+            item.textContent = values[counter];
             digitRight.forEach((dgt, n) => {
                 if (n == i) {
                     dgt.textContent = item.textContent;
@@ -304,36 +304,36 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    printArrayOnClick(hiddenCard, controlBtns);
+    handleArrayOnClick(hiddenCard, controlBtns);
 
-    function printArrayOnClick (array, btn) {
+    function handleArrayOnClick (array, btn) {
         let index = 0;
         let intervalId;
       
-        const print = () => {
-        //   console.log(index);
+        const handleCards = () => {
           showCardContents(array[index], index+1)
           index++;
           addAttr();
       
-          if (index === 4 || index === 7 || index === 8) {
-            clearInterval(intervalId);
-            intervalId = null;
-            removeAttr();
-            
-          } else if (index >= array.length) {
-            clearInterval(intervalId);
-            intervalId = null;
-            index = 0;
-            addAttr();
-            determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
-            increaseScore();
-          }
+            if (index >= array.length) {
+                clearInterval(intervalId);
+                intervalId = null;
+                index = 0;
+                addAttr();
+                determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
+                increaseScore();
+            }
+
+            if (index > 3) {
+                clearInterval(intervalId);
+                intervalId = null;
+                removeAttr();
+            }
         };
       
         const handleClick = () => {
           if (!intervalId) {
-            intervalId = setInterval(print, 500);
+            intervalId = setInterval(handleCards, 500);
           } else {
             clearInterval(intervalId);
             intervalId = null;
@@ -490,7 +490,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         
         changeEmoji();
-        const showOverlay = setTimeout(() => showRestartWindow(), 2000);
+        setTimeout(() => showRestartWindow(), 2000);
     }
 
     function compareEquals(matches) {
@@ -525,7 +525,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         const highestCard = [];
-        highestCard.push(detectHighest(cardValueEntries, arrCardsValues).pop());
+        highestCard.push(sortByValue(cardValueEntries, arrCardsValues).pop());
         const dataArr = [];
         dataArr.push(pointsCounter, arrCardsValues, matches, arrCards, highestCard, playersCards);
 
@@ -535,15 +535,15 @@ window.addEventListener('DOMContentLoaded', () => {
     function getMatches(player) {
         const playersCards = document.querySelectorAll(player);
         const middleCards = document.querySelectorAll('[data-card=middle]');
-        const cardValueEntries = Object.entries(value);
+        const cardValueEntries = Object.entries(values);
         
         const arrCards = [...playersCards, ...middleCards];
         const playersCardsArray = getCardValues([...playersCards]);
 
         const arrCardsValues = getCardValues(arrCards);
 
-        const sortedCardsValues = detectHighest(cardValueEntries, arrCardsValues);
-        const playersCardsValues = detectHighest(cardValueEntries, playersCardsArray);
+        const sortedCardsValues = sortByValue(cardValueEntries, arrCardsValues);
+        const playersCardsValues = sortByValue(cardValueEntries, playersCardsArray);
 
         const matches = sortedCardsValues.filter((item, a) => {
             return sortedCardsValues.some((other, b) => {
@@ -554,6 +554,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+
+        // const array = [];
+        // for (let i = 0; i <= sortedCardsValues.length; i++) {
+            
+        //     console.log(sortedCardsValues[i+1][0], sortedCardsValues[i][0], sortedCardsValues[i+1][0] - sortedCardsValues[i][0]);
+        //     if (sortedCardsValues[i+1][0] && sortedCardsValues[i+1][0] - sortedCardsValues[i][0] == 1) {
+                
+        //         array.push(sortedCardsValues[i], sortedCardsValues[i+1]);
+        //     } else {
+        //         continue;
+        //     }
+        // }
 
         const cutMatches = [];
         
@@ -570,15 +582,11 @@ window.addEventListener('DOMContentLoaded', () => {
         return [cutMatches, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
     }
 
-    function detectHighest(cardValueEntries, arrCardsValues) {
+    function sortByValue(cardValueEntries, arrCardsValues) {
         const arr = [];
         cardValueEntries.forEach(value => {
             arrCardsValues.forEach(card => {
-                if (card[0] == value[1]) {
-                    const ar = []
-                    ar.push(...value, card[1], card[2]);
-                    arr.push(ar);                 
-                }                
+                if (card[0] == value[1]) arr.push([...value, card[1], card[2]]);              
             });
         });
         return arr;
@@ -586,13 +594,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function getCardValues(cards) {
         return cards.map((card, i) => {
-            const pairOfValues = [];
             const suit = card.querySelector('img').getAttribute('alt');
             const digit = card.querySelector('.digit__left').innerHTML;
-
-            pairOfValues.push(digit, suit, i);
     
-            return pairOfValues;
+            return [digit, suit, i];
         });
     }
 
@@ -609,9 +614,9 @@ window.addEventListener('DOMContentLoaded', () => {
             subtitleText.innerHTML = "That's a <u>HIGH CARD</u>!";
         } else if (matches.length == 7) {
             const cut = matches.slice(3); // need to solve!
-            setHighlight(arrCardsValues, cut, arrCards);
+            setHighlighting(arrCardsValues, cut, arrCards);
         } else {
-            setHighlight(arrCardsValues, matches, arrCards); 
+            setHighlighting(arrCardsValues, matches, arrCards); 
 
             if (matches.length == 3) {
                 subtitleText.innerHTML = "That is <u>3 of a kind</u>!";
@@ -629,7 +634,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function setHighlight(arrCardsValues, matches, arrCards) {
+    function setHighlighting(arrCardsValues, matches, arrCards) {
 
         arrCardsValues.forEach((card, i) => {
             for (const key of matches) {
@@ -640,6 +645,8 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // chips calc
 
     const rangeInput = document.querySelector('.button__range');
     const rangeValue = document.querySelector('.rate__amount');
@@ -666,6 +673,7 @@ window.addEventListener('DOMContentLoaded', () => {
     function calcChips() {
         chipsPlayer.innerText -= parseInt(rangeValue.innerText);
         rangeValue.textContent = 5;
+        rangeInput.value = 5;
     }
 
 
