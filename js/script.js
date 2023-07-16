@@ -555,17 +555,67 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // const array = [];
-        // for (let i = 0; i <= sortedCardsValues.length; i++) {
-            
-        //     console.log(sortedCardsValues[i+1][0], sortedCardsValues[i][0], sortedCardsValues[i+1][0] - sortedCardsValues[i][0]);
-        //     if (sortedCardsValues[i+1][0] && sortedCardsValues[i+1][0] - sortedCardsValues[i][0] == 1) {
-                
-        //         array.push(sortedCardsValues[i], sortedCardsValues[i+1]);
-        //     } else {
-        //         continue;
-        //     }
-        // }
+
+        function findSequentialCombinations(arr) {
+            let longestSequence = [];
+            let currentSequence = [];
+          
+            for (let i = 0; i < arr.length; i++) {
+              if (
+                currentSequence.length === 0 ||
+                Number(arr[i][0]) === Number(currentSequence[currentSequence.length - 1][0]) + 1
+              ) {
+                currentSequence.push(arr[i]);
+              } else {
+                if (
+                  currentSequence.length >= longestSequence.length
+                ) {
+                  longestSequence = currentSequence;
+                }
+                currentSequence = [arr[i]];
+              }
+            }
+          
+            if (currentSequence.length >= longestSequence.length) {
+              longestSequence = currentSequence;
+            }
+          
+            const sequences = [];
+            let sequence = [];
+            for (let i = 0; i < arr.length; i++) {
+              if (i > 0 && Number(arr[i][0]) !== Number(arr[i - 1][0]) + 1) {
+                sequences.push(sequence);
+                sequence = [];
+              }
+              sequence.push(arr[i]);
+            }
+            sequences.push(sequence);
+          
+            let maxSequenceLength = 0;
+            let maxSequenceIndex = -1;
+          
+            for (let i = 0; i < sequences.length; i++) {
+              if (sequences[i].length > maxSequenceLength) {
+                maxSequenceLength = sequences[i].length;
+                maxSequenceIndex = i;
+              }
+            }
+          
+            longestSequence = sequences[maxSequenceIndex];
+          
+            for (let i = 0; i < sequences.length; i++) {
+              if (
+                sequences[i].length === longestSequence.length &&
+                Number(sequences[i][0][0]) > Number(longestSequence[0][0])
+              ) {
+                longestSequence = sequences[i];
+              }
+            }
+          
+            return longestSequence;
+        }
+        
+        console.log(findSequentialCombinations(sortedCardsValues));
 
         const cutMatches = [];
         
