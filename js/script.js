@@ -557,22 +557,41 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         function findSequentialCombinations(arr) {
+            function processArray(arr) {
+                const result = [];
+                const seen = new Set();
+                
+                for (let i = 0; i < arr.length; i++) {
+                  const subarray = arr[i];
+                  const firstElement = subarray[0];
+                  
+                  if (!seen.has(firstElement)) {
+                    result.push(subarray);
+                    seen.add(firstElement);
+                  }
+                }
+                
+                return result;
+            }
+
+            const uniqueElems = processArray(arr);
+
             let longestSequence = [];
             let currentSequence = [];
           
-            for (let i = 0; i < arr.length; i++) {
+            for (let i = 0; i < uniqueElems.length; i++) {
               if (
                 currentSequence.length === 0 ||
-                Number(arr[i][0]) === Number(currentSequence[currentSequence.length - 1][0]) + 1
+                Number(uniqueElems[i][0]) === Number(currentSequence[currentSequence.length - 1][0]) + 1
               ) {
-                currentSequence.push(arr[i]);
+                currentSequence.push(uniqueElems[i]);
               } else {
                 if (
                   currentSequence.length >= longestSequence.length
                 ) {
                   longestSequence = currentSequence;
                 }
-                currentSequence = [arr[i]];
+                currentSequence = [uniqueElems[i]];
               }
             }
           
@@ -582,12 +601,12 @@ window.addEventListener('DOMContentLoaded', () => {
           
             const sequences = [];
             let sequence = [];
-            for (let i = 0; i < arr.length; i++) {
-              if (i > 0 && Number(arr[i][0]) !== Number(arr[i - 1][0]) + 1) {
+            for (let i = 0; i < uniqueElems.length; i++) {
+              if (i > 0 && Number(uniqueElems[i][0]) !== Number(uniqueElems[i - 1][0]) + 1) {
                 sequences.push(sequence);
                 sequence = [];
               }
-              sequence.push(arr[i]);
+              sequence.push(uniqueElems[i]);
             }
             sequences.push(sequence);
           
@@ -612,10 +631,11 @@ window.addEventListener('DOMContentLoaded', () => {
               }
             }
           
+            if (longestSequence.length > 5) return longestSequence.slice(-5);
             return longestSequence;
         }
         
-        console.log(findSequentialCombinations(sortedCardsValues));
+        const street = findSequentialCombinations(sortedCardsValues);
 
         const cutMatches = [];
         
@@ -627,9 +647,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
         } else {
             cutMatches.push(...matches);
-        }        
+        }
 
-        return [cutMatches, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
+
+        if (street.length == 5 && cutMatches.length <= 4) {
+            return [street, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
+        } else {
+            return [cutMatches, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
+        }
+
     }
 
     function sortByValue(cardValueEntries, arrCardsValues) {
@@ -673,7 +699,11 @@ window.addEventListener('DOMContentLoaded', () => {
             } else if (matches.length == 2) {
                 subtitleText.innerHTML = "That's a <u>PAIR</u>!";
             } else if (matches.length == 5 || matches.length == 7) {
-                subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
+                if (isStreet(matches).length == 5) {
+                    subtitleText.innerHTML = "That's a <u>STREET</u>!";
+                } else {
+                    subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
+                }
             } else if (matches.length == 4) {
                 if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
                     subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!"; 
@@ -681,6 +711,19 @@ window.addEventListener('DOMContentLoaded', () => {
                     subtitleText.innerHTML = "That is <u>TWO PAIRS</u>!";
                 }
             }
+        }
+
+        function isStreet(arr) {
+            const currentSequence = []
+            for (let i = 0; i < arr.length; i++) {
+                if (
+                  currentSequence.length === 0 ||
+                  Number(arr[i][0]) === Number(currentSequence[currentSequence.length - 1][0]) + 1
+                ) {
+                  currentSequence.push(arr[i]);
+                }
+            }
+            return currentSequence;
         }
     }
 
