@@ -184,7 +184,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // hand cards
 
-    // executeCardForming();
+    executeCardForming();
 
     function executeCardForming() {
 
@@ -689,11 +689,38 @@ window.addEventListener('DOMContentLoaded', () => {
 
             subtitleText.innerHTML = "That's a <u>HIGH CARD</u>!";
         } else if (matches.length == 7) {
-            const cut = matches.slice(3); // need to solve!
-            setHighlighting(arrCardsValues, cut, arrCards);
-            console.log(matches);
-            console.log(cut);
-            subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!";
+            let longer;
+            let shorter = [];
+            function handleSevenMatches(arr, index = 0) {
+                let i = index;
+                let dublicates;
+                dublicates = arr.filter(item => {
+                    return item[0] == arr[i][0]
+                });
+                if (dublicates.length == 4) {
+                    longer = [...dublicates]
+                } else {
+                    if (dublicates.length == 3) {
+                        longer = [...dublicates]
+                        
+                        if (i < arr.length - 1) {
+                            handleSevenMatches(arr, i + 1)
+                        }
+                    } else {
+                        shorter = [...dublicates]
+                        if (i < arr.length - 1) {
+                            handleSevenMatches(arr, i + 1)
+                        }
+                    }
+                }
+            }
+
+            handleSevenMatches(matches);
+    
+            const result = [...shorter, ...longer];
+            setHighlighting(arrCardsValues, result, arrCards);
+            
+            result.length == 4 ? subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!" : subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
         } else {
             setHighlighting(arrCardsValues, matches, arrCards); 
 
@@ -778,28 +805,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-    function chicker(arr, index = 0) {
-        let i = index;
-        let erik;
-        let res = [];
-        erik = arr.filter(item => {
-            // console.log(item[0]);
-            return item[0] == arr[i][0]
-        });
-
-        if (erik.length == 3) {
-            // console.log(erik);
-            res.push(erik)
-        } else {
-            chicker(arr, i + 1)
-        }
-
-        return res;
-    }
-
-    let res = chicker([['2', '8', 'clubs', 5], ['2', '7', 'spades', 2], ['3', '7', 'spades', 2], ['3', '7', 'spades', 2], ['4', '7', 'spades', 2], ['4', '7', 'spades', 2], ['4', '7', 'spades', 2]]);
-    console.log(res);
 
 
 
