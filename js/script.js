@@ -176,7 +176,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         elem.innerHTML = `
             <h2 class="title_input">Enter your name</h2>
-            <input type="text" id="name" class="user_input">
+            <input type="text" id="name" class="user_input" value="Player">
         `;
 
         return elem;
@@ -184,7 +184,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // hand cards
 
-    executeCardForming();
+    // executeCardForming();
 
     function executeCardForming() {
 
@@ -281,10 +281,10 @@ window.addEventListener('DOMContentLoaded', () => {
         const playerScore = document.querySelectorAll('.stats__player .stats__result'),
               compScore = document.querySelectorAll('.stats__computer .stats__result');
 
-        const addPoints = (winnner, looser) => {
-            winnner[0].innerHTML++;
+        const addPoints = (winner, looser) => {
+            winner[0].innerHTML++;
             looser[1].innerHTML++;
-            winnner[2].innerHTML++;
+            winner[2].innerHTML++;
             looser[2].innerHTML++;
         }
 
@@ -691,11 +691,14 @@ window.addEventListener('DOMContentLoaded', () => {
         } else if (matches.length == 7) {
             const cut = matches.slice(3); // need to solve!
             setHighlighting(arrCardsValues, cut, arrCards);
+            console.log(matches);
+            console.log(cut);
+            subtitleText.innerHTML = "That's a <u>FOUR OF A KIND</u>!";
         } else {
             setHighlighting(arrCardsValues, matches, arrCards); 
 
             if (matches.length == 3) {
-                subtitleText.innerHTML = "That is <u>3 of a kind</u>!";
+                subtitleText.innerHTML = "That is <u>THREE OF A KIND</u>!";
             } else if (matches.length == 2) {
                 subtitleText.innerHTML = "That's a <u>PAIR</u>!";
             } else if (matches.length == 5 || matches.length == 7) {
@@ -776,8 +779,27 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
+    function chicker(arr, index = 0) {
+        let i = index;
+        let erik;
+        let res = [];
+        erik = arr.filter(item => {
+            // console.log(item[0]);
+            return item[0] == arr[i][0]
+        });
 
+        if (erik.length == 3) {
+            // console.log(erik);
+            res.push(erik)
+        } else {
+            chicker(arr, i + 1)
+        }
 
+        return res;
+    }
+
+    let res = chicker([['2', '8', 'clubs', 5], ['2', '7', 'spades', 2], ['3', '7', 'spades', 2], ['3', '7', 'spades', 2], ['4', '7', 'spades', 2], ['4', '7', 'spades', 2], ['4', '7', 'spades', 2]]);
+    console.log(res);
 
 
 
