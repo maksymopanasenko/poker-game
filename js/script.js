@@ -554,6 +554,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+        console.log(matches);
 
 
         function findSequentialCombinations(arr) {
@@ -634,17 +635,37 @@ window.addEventListener('DOMContentLoaded', () => {
             if (longestSequence.length > 5) return longestSequence.slice(-5);
             return longestSequence;
         }
+
+        // function findFourOfKind(array) {
+        //     console.log(array);
+        //     for (let i = 0; i < array.length; i++) {
+        //         const commonElement = array[i][0];
+        //         const result = array.filter(subArray => subArray[0] === commonElement);
+        //         if (result.length === 4) {
+        //             console.log(result);
+        //             return result;
+        //             break;
+        //         }
+        //     }
+        // }
         
         const street = findSequentialCombinations(sortedCardsValues);
 
         const cutMatches = [];
         
         if (matches.length == 6) {
-                if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
-                    cutMatches.push(...matches.slice(3));
-                } else {
-                    cutMatches.push(...matches.slice(2));
-                }
+            // console.log(matches);
+            // const resultArray = findFourOfKind(matches);
+
+            // if (resultArray) {
+            //     cutMatches.push(...resultArray);
+            //     return;
+            // }
+            if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
+                cutMatches.push(...matches.slice(3));
+            } else {
+                cutMatches.push(...matches.slice(2));
+            }
         } else {
             cutMatches.push(...matches);
         }
@@ -815,3 +836,27 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 });
+
+// function findFourOfKind(array) {
+    
+//     for (let i = 0; i < array.length; i++) {
+//         const commonElement = array[i][0];
+//         const result = array.filter(subArray => subArray[0] === commonElement);
+//         if (result.length === 4) {
+//             return result;
+//             break;
+//         }
+//     }
+// }
+  
+//   const initialArray = [
+//     ['3', '4', 'hearts', 1],
+//     ['4', '4', 'hearts', 2],
+//     ['3', '4', 'hearts', 4],
+//     ['4', '4', 'hearts', 6],
+//     ['4', '5', 'hearts', 0],
+//     ['3', '5', 'hearts', 5]
+//   ];
+  
+//   const resultArray = findAndReplace(initialArray);
+//   console.log(resultArray);
