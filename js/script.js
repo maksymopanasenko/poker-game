@@ -91,19 +91,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 addElementToDOM('.buttons__wrapper_tutorial', 'button', 'tutorial_btn', 'next', 'Next');
                 chooseHighlight();
             } else if (target.classList.contains('close')) {
-
-                if (!userName) {
-                    document.querySelector('.user_input').placeholder = 'This field cannot be empty!';
-                    return false;
-                }
-                
-                overlay.style.display = 'none';
-                document.querySelector('.stats__heading_player').innerText = userName;
-                document.querySelector('.user_name').innerText = userName;   
-                startBtn.removeAttribute('disabled');
+                closeTutorial();
             } else {
                 highlightedItems.forEach(item => item.classList.remove('styled'));  
-                closeTutorial();
+                finishTutorial();
                 const newButton = document.querySelector('.next');
                 newButton ? newButton.remove() : null;
                 target.classList.add('close');
@@ -115,16 +106,30 @@ window.addEventListener('DOMContentLoaded', () => {
 
     //
 
-    function closeTutorial() {
+    function finishTutorial() {
         modalWrapper.innerHTML = '';
         modalWrapper.append(changeContentToInput());
 
         modalWrapper.querySelector('input').focus();
 
         const dataText = document.querySelector('.user_input');
-        dataText.addEventListener('input', () => {
-            userName = dataText.value;
+        userName = dataText.value;
+        dataText.addEventListener('keydown', (e) => {
+            if (e.code == 'Enter') closeTutorial();
         });
+        dataText.addEventListener('input', () => userName = dataText.value);
+    }
+
+    function closeTutorial() {
+        if (!userName) {
+            document.querySelector('.user_input').placeholder = 'This field cannot be empty!';
+            return false;
+        }
+        
+        overlay.style.display = 'none';
+        document.querySelector('.stats__heading_player').innerText = userName;
+        document.querySelector('.user_name').innerText = userName;   
+        startBtn.removeAttribute('disabled');
     }
      
     //
@@ -164,7 +169,7 @@ window.addEventListener('DOMContentLoaded', () => {
             button.remove();
 
         } else if (counter >= highlightedItems.length) {
-            closeTutorial();
+            finishTutorial();
         }
     }
 
@@ -334,6 +339,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const handleClick = () => {
           if (!intervalId) {
             intervalId = setInterval(handleCards, 500);
+            addAttr();  
           } else {
             clearInterval(intervalId);
             intervalId = null;
@@ -344,10 +350,10 @@ window.addEventListener('DOMContentLoaded', () => {
             const target = e.target;
             if (target && target.classList.contains('start-btn')) {
                 handleClick();
-                removeAttr();
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
             } else if (target && target.classList.contains('raise-btn')) {
+                console.log('click');
                 handleClick();
                 calcChips();
             } else if (target && target.classList.contains('check-btn')) {
@@ -554,7 +560,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-        console.log(matches);
 
 
         function findSequentialCombinations(arr) {
@@ -597,7 +602,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }
           
             if (currentSequence.length >= longestSequence.length) {
-              longestSequence = currentSequence;
+                longestSequence = currentSequence;
             }
           
             const sequences = [];
@@ -636,33 +641,27 @@ window.addEventListener('DOMContentLoaded', () => {
             return longestSequence;
         }
 
-        // function findFourOfKind(array) {
-        //     console.log(array);
-        //     for (let i = 0; i < array.length; i++) {
-        //         const commonElement = array[i][0];
-        //         const result = array.filter(subArray => subArray[0] === commonElement);
-        //         if (result.length === 4) {
-        //             console.log(result);
-        //             return result;
-        //             break;
-        //         }
-        //     }
-        // }
+        function findFourOfKind(array) {
+            for (let i = 0; i < array.length; i++) {
+                const commonElement = array[i][0];
+                const result = array.filter(subArray => subArray[0] === commonElement);
+                if (result.length === 4) {
+                    return result;
+                    break;
+                }
+            }
+        }
         
         const street = findSequentialCombinations(sortedCardsValues);
 
         const cutMatches = [];
         
         if (matches.length == 6) {
-            // console.log(matches);
-            // const resultArray = findFourOfKind(matches);
-
-            // if (resultArray) {
-            //     cutMatches.push(...resultArray);
-            //     return;
-            // }
-            if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
-                cutMatches.push(...matches.slice(3));
+            const resultArray = findFourOfKind(matches);
+            if (resultArray) {
+                cutMatches.push(...resultArray);
+            } else if (matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0]) {
+                cutMatches.push(...matches.slice(1));
             } else {
                 cutMatches.push(...matches.slice(2));
             }
@@ -671,7 +670,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        if (street.length == 5 && cutMatches.length <= 4) {
+        if (street.length == 5 && cutMatches.length <= 4) { // fix cut can be four of kind
             return [street, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
         } else {
             return [cutMatches, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
@@ -836,27 +835,3 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 });
-
-// function findFourOfKind(array) {
-    
-//     for (let i = 0; i < array.length; i++) {
-//         const commonElement = array[i][0];
-//         const result = array.filter(subArray => subArray[0] === commonElement);
-//         if (result.length === 4) {
-//             return result;
-//             break;
-//         }
-//     }
-// }
-  
-//   const initialArray = [
-//     ['3', '4', 'hearts', 1],
-//     ['4', '4', 'hearts', 2],
-//     ['3', '4', 'hearts', 4],
-//     ['4', '4', 'hearts', 6],
-//     ['4', '5', 'hearts', 0],
-//     ['3', '5', 'hearts', 5]
-//   ];
-  
-//   const resultArray = findAndReplace(initialArray);
-//   console.log(resultArray);
