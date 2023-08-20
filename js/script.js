@@ -516,15 +516,28 @@ window.addEventListener('DOMContentLoaded', () => {
         } else if (matches.length == 2) {
             pointsCounter += 2;
         } else if (matches.length == 5) {
-            pointsCounter += 5; // also can be street or flush
+            if (findFlush(matches)) {
+                if (isStreet(matches)) {
+                    if (matches[0][1] == '10') {
+                        pointsCounter += 10; // royal flush
+                    } else {
+                        pointsCounter += 9; // straight flush
+                    }
+                } else {
+                    pointsCounter += 6; // flush
+                }
+            } else {
+                pointsCounter += 7; // full house
+            }
         } else if (matches.length == 4) {
             if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
-                pointsCounter += 6;
+                pointsCounter += 8;
             } else {
                 pointsCounter += 3;
             }
         } else if (matches.length == 7) {
-            pointsCounter += 5;
+            //need to test
+            pointsCounter += 7;
         } else {
             pointsCounter += 1;
         }
@@ -536,6 +549,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
         return dataArr;
     };
+
+    function findFlush(arr) {
+        let hearts = [],
+            diamonds = [],
+            clubs = [],
+            spades = [];
+
+        arr.forEach(item => {
+            const [first, second, third] = item;
+            if (third == 'hearts') {
+                hearts.push(item);
+                return;
+            } if (third == 'diamonds') {
+                diamonds.push(item);
+                return;
+            } if (third == 'clubs') {
+                clubs.push(item);
+                return;
+            } else {
+                spades.push(item);
+            }
+        });
+
+        const maxMatch = Math.max(hearts.length, diamonds.length, spades.length, clubs.length);
+        const suit = [hearts, diamonds, spades, clubs].find(item => item.length === maxMatch);
+        if (suit.length >= 5) {
+            return suit.slice(-5);
+        } else {
+            return null;
+        }
+    }
 
     function getMatches(player) {
         const playersCards = document.querySelectorAll(player);
@@ -569,37 +613,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-
-        function findFlush(arr) {
-            let hearts = [],
-                diamonds = [],
-                clubs = [],
-                spades = [];
-
-            arr.forEach(item => {
-                const [first, second, third] = item;
-                if (third == 'hearts') {
-                    hearts.push(item);
-                    return;
-                } if (third == 'diamonds') {
-                    diamonds.push(item);
-                    return;
-                } if (third == 'clubs') {
-                    clubs.push(item);
-                    return;
-                } else {
-                    spades.push(item);
-                }
-            });
-
-            const maxMatch = Math.max(hearts.length, diamonds.length, spades.length, clubs.length);
-            const suit = [hearts, diamonds, spades, clubs].find(item => item.length === maxMatch);
-            if (suit.length >= 5) {
-                return suit.slice(-5);
-            } else {
-                return null;
-            }
-        }
 
         function findSequentialCombinations(arr) {
             function processArray(arr) {
@@ -693,6 +706,7 @@ window.addEventListener('DOMContentLoaded', () => {
         
         const street = findSequentialCombinations(sortedCardsValues);
         const flush = findFlush(matchedBySuit);
+        const straightFlush = flush ? isStreet(flush) : null;
 
         const cutMatches = [];
         
@@ -709,7 +723,9 @@ window.addEventListener('DOMContentLoaded', () => {
             cutMatches.push(...matches);
         }
 
-        if (flush && cutMatches.length <= 4) {
+        if (straightFlush && cutMatches.length <= 4) {
+            return [flush, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
+        } else if (flush && cutMatches.length <= 4) {
             return [flush, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
         } else if (street.length == 5 && cutMatches.length <= 4) { // fix cut can be four of kind
             return [street, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
@@ -790,10 +806,16 @@ window.addEventListener('DOMContentLoaded', () => {
             } else if (matches.length == 2) {
                 subtitleText.innerHTML = "That's a <u>PAIR</u>!";
             } else if (matches.length == 5 || matches.length == 7) {
-                if (matches[0][2] == matches[1][2] && matches[0][2] == matches[2][2] && matches[0][2] == matches[3][2]) {
-                    subtitleText.innerHTML = "That's a <u>FLUSH</u>!";
+                if (matches[0][2] == matches[1][2] && matches[0][2] == matches[2][2] && matches[0][2] == matches[3][2] && matches[0][2] == matches[4][2]) {
+                    if (matches[0][1] == '10') {
+                        subtitleText.innerHTML = "That's a <u>ROYAL FLUSH</u>!";
+                    } else if (isStreet(matches).length == 5) {
+                        subtitleText.innerHTML = "That's a <u>STRAIGHT FLUSH</u>!"
+                    } else {
+                        subtitleText.innerHTML = "That's a <u>FLUSH</u>!";
+                    }
                 } else if (isStreet(matches).length == 5) {
-                    subtitleText.innerHTML = "That's a <u>STREET</u>!";
+                    subtitleText.innerHTML = "That's a <u>STRAIGHT</u>!";
                 } else {
                     subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
                 }
@@ -805,19 +827,19 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
+    }
 
-        function isStreet(arr) {
-            const currentSequence = []
-            for (let i = 0; i < arr.length; i++) {
-                if (
-                  currentSequence.length === 0 ||
-                  Number(arr[i][0]) === Number(currentSequence[currentSequence.length - 1][0]) + 1
-                ) {
-                  currentSequence.push(arr[i]);
-                }
+    function isStreet(arr) {
+        const currentSequence = []
+        for (let i = 0; i < arr.length; i++) {
+            if (
+              currentSequence.length === 0 ||
+              Number(arr[i][0]) === Number(currentSequence[currentSequence.length - 1][0]) + 1
+            ) {
+              currentSequence.push(arr[i]);
             }
-            return currentSequence;
         }
+        return currentSequence;
     }
 
     function setHighlighting(arrCardsValues, matches, arrCards) {
