@@ -353,7 +353,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
             } else if (target && target.classList.contains('raise-btn')) {
-                console.log('click');
                 handleClick();
                 calcChips();
             } else if (target && target.classList.contains('check-btn')) {
@@ -451,8 +450,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function determineWinner(player, comp) {
 
-        const [pointsPlayer, valuesP, matchesPlayer, cardsP, highestPlayer, playersCards] = player;
-        const [pointsComp, valuesC, matchesComp, cardsC, highestComp, compsCards] = comp;
+        const [pointsPlayer,, matchesPlayer,,, playersCards] = player;
+        const [pointsComp,, matchesComp,,, compsCards] = comp;
 
         console.log(`You scored with ${pointsPlayer} points`)
         console.log(`Computer scored with ${pointsComp} points`)
@@ -517,7 +516,7 @@ window.addEventListener('DOMContentLoaded', () => {
         } else if (matches.length == 2) {
             pointsCounter += 2;
         } else if (matches.length == 5) {
-            pointsCounter += 5;
+            pointsCounter += 5; // also can be street or flush
         } else if (matches.length == 4) {
             if (matches[0][0] == matches[1][0] && matches[0][0] == matches[1][0] && matches[0][0] == matches[2][0] && matches[0][0] == matches[3][0]) {
                 pointsCounter += 6;
@@ -561,6 +560,46 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        const matchedBySuit = sortedCardsValues.filter((item, a) => {
+            return sortedCardsValues.some((other, b) => {
+                if (b != a) {
+                    if (other[2] == item[2]) {
+                        return other[2];
+                    }
+                }
+            });
+        });
+
+        function findFlush(arr) {
+            let hearts = [],
+                diamonds = [],
+                clubs = [],
+                spades = [];
+
+            arr.forEach(item => {
+                const [first, second, third] = item;
+                if (third == 'hearts') {
+                    hearts.push(item);
+                    return;
+                } if (third == 'diamonds') {
+                    diamonds.push(item);
+                    return;
+                } if (third == 'clubs') {
+                    clubs.push(item);
+                    return;
+                } else {
+                    spades.push(item);
+                }
+            });
+
+            const maxMatch = Math.max(hearts.length, diamonds.length, spades.length, clubs.length);
+            const suit = [hearts, diamonds, spades, clubs].find(item => item.length === maxMatch);
+            if (suit.length >= 5) {
+                return suit.slice(-5);
+            } else {
+                return null;
+            }
+        }
 
         function findSequentialCombinations(arr) {
             function processArray(arr) {
@@ -653,6 +692,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         
         const street = findSequentialCombinations(sortedCardsValues);
+        const flush = findFlush(matchedBySuit);
 
         const cutMatches = [];
         
@@ -669,8 +709,9 @@ window.addEventListener('DOMContentLoaded', () => {
             cutMatches.push(...matches);
         }
 
-
-        if (street.length == 5 && cutMatches.length <= 4) { // fix cut can be four of kind
+        if (flush && cutMatches.length <= 4) {
+            return [flush, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
+        } else if (street.length == 5 && cutMatches.length <= 4) { // fix cut can be four of kind
             return [street, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
         } else {
             return [cutMatches, cardValueEntries, arrCardsValues, arrCards, playersCardsValues];
@@ -749,7 +790,9 @@ window.addEventListener('DOMContentLoaded', () => {
             } else if (matches.length == 2) {
                 subtitleText.innerHTML = "That's a <u>PAIR</u>!";
             } else if (matches.length == 5 || matches.length == 7) {
-                if (isStreet(matches).length == 5) {
+                if (matches[0][2] == matches[1][2] && matches[0][2] == matches[2][2] && matches[0][2] == matches[3][2]) {
+                    subtitleText.innerHTML = "That's a <u>FLUSH</u>!";
+                } else if (isStreet(matches).length == 5) {
                     subtitleText.innerHTML = "That's a <u>STREET</u>!";
                 } else {
                     subtitleText.innerHTML = "That's a <u>FULL HOUSE</u>!";
