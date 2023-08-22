@@ -540,6 +540,11 @@ button:active {
     padding: 10px 20px;
 }
 
+.stats__heading_player,
+.stats__heading_computer {
+    padding-right: 7px;
+}
+
 table {
     border-collapse: collapse;
 }
@@ -547,7 +552,6 @@ table {
 th {
     height: 30px;
     background-color: #709656;
-    padding: 0 3px;
     font-size: 12px;
     font-weight: 700;
 }
@@ -616,4 +620,8 @@ td {
     justify-content: space-between;
     width: 300px;
     margin: 40px auto;
+}
+
+.show {
+    display: block;
 }

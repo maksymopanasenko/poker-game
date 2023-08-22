@@ -110,7 +110,7 @@ window.addEventListener('DOMContentLoaded', () => {
         modalWrapper.innerHTML = '';
         modalWrapper.append(changeContentToInput());
 
-        modalWrapper.querySelector('input').focus();
+        modalWrapper.querySelector('input').onfocus = (e) => e.target.value = '';
 
         const dataText = document.querySelector('.user_input');
         userName = dataText.value;
@@ -279,8 +279,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const rateBtn = document.querySelector('.rate'),
           bar = document.querySelector('.buttons__bar');
 
-    rateBtn.addEventListener('click', () => bar.style.display = 'block');
-    raiseBtn.addEventListener('click', () => bar.style.display = 'none');
+    rateBtn.addEventListener('click', () => {
+        if (document.querySelector('.count_player').innerText <= 5) return;
+        bar.classList.toggle('show');
+    });
+    raiseBtn.addEventListener('click', () => bar.classList.remove('show'));
 
     function increaseScore() {
         const playerScore = document.querySelectorAll('.stats__player .stats__result'),
@@ -517,13 +520,14 @@ window.addEventListener('DOMContentLoaded', () => {
             pointsCounter += 2;
         } else if (matches.length == 5) {
             if (findFlush(matches)) {
-                if (isStreet(matches)) {
+                if (isStreet(matches).length == 5) {
                     if (matches[0][1] == '10') {
                         pointsCounter += 10; // royal flush
                     } else {
                         pointsCounter += 9; // straight flush
                     }
                 } else {
+                    console.log('street');
                     pointsCounter += 6; // flush
                 }
             } else {
@@ -768,6 +772,7 @@ window.addEventListener('DOMContentLoaded', () => {
         } else if (matches.length == 7) {
             let longer;
             let shorter = [];
+
             function handleSevenMatches(arr, index = 0) {
                 let i = index;
                 let dublicates;
@@ -882,6 +887,10 @@ window.addEventListener('DOMContentLoaded', () => {
         chipsPlayer.innerText -= parseInt(rangeValue.innerText);
         rangeValue.textContent = 5;
         rangeInput.value = 5;
+        if (chipsPlayer.innerText <= 5) {
+            rangeValue.textContent = chipsPlayer.innerText;
+            rangeInput.value = chipsPlayer.innerText;
+        }
     }
 
 
