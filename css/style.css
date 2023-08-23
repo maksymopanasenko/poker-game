@@ -360,6 +360,20 @@
     z-index: -1;
 }
 
+.game__objects {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    gap: 35px;
+}
+
+.game__bank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
 .card__field {
     display: flex;
     justify-content: center;

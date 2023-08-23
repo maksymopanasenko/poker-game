@@ -14,6 +14,10 @@ window.addEventListener('DOMContentLoaded', () => {
           card = document.querySelectorAll('.card__container'),
           subtitleText = document.querySelector('.hint__subtitle'),
           coreText = document.querySelector('.hint__text');
+
+    const chipsPlayer = document.querySelector('.count_player'),
+    chipsComp = document.querySelector('.count_comp');
+    const chipsBank = document.getElementById('bank');
     
     const playersC = document.querySelectorAll('[data-player]');
     const middles = document.querySelectorAll('[data-card="middle"]');
@@ -299,9 +303,11 @@ window.addEventListener('DOMContentLoaded', () => {
         switch (coreText.innerHTML) {
             case 'Opponent won!':
                 addPoints(compScore, playerScore);
+                chipsComp.innerText = parseInt(chipsComp.innerText) + parseInt(chipsBank.innerText);
                 break;
             case 'You won!':
                 addPoints(playerScore, compScore);
+                chipsPlayer.innerText = parseInt(chipsPlayer.innerText) + parseInt(chipsBank.innerText);
                 break;
             case 'Your cards are the same. It is definitely a draw!':
                 compScore[0].innerHTML++;
@@ -310,6 +316,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 playerScore[2].innerHTML++;
                 break;
         }
+        document.getElementById('bank').innerText = 0;
     }
 
     handleArrayOnClick(hiddenCard, controlBtns);
@@ -339,10 +346,11 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         };
       
-        const handleClick = () => {
+        const handleClick = (target) => {
           if (!intervalId) {
             intervalId = setInterval(handleCards, 500);
-            addAttr();  
+            addAttr();
+            processLogic(target)
           } else {
             clearInterval(intervalId);
             intervalId = null;
@@ -352,14 +360,14 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             const target = e.target;
             if (target && target.classList.contains('start-btn')) {
-                handleClick();
+                handleClick(target);
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
             } else if (target && target.classList.contains('raise-btn')) {
-                handleClick();
-                calcChips();
+                handleClick(target);
+                calcChips(chipsPlayer);
             } else if (target && target.classList.contains('check-btn')) {
-                handleClick();
+                handleClick(target);
             } else if (target && target.classList.contains('fold-btn')) {
                 overlay.innerHTML=`
                     <div class="modal">
@@ -868,9 +876,6 @@ window.addEventListener('DOMContentLoaded', () => {
         rangeValue.textContent = rangeInput.value;
     });
 
-
-    const chipsPlayer = document.querySelector('.count_player');
-
     rangeInput.max = chipsPlayer.innerHTML;
 
     const observer = new MutationObserver(function(mutationsList) {
@@ -883,13 +888,55 @@ window.addEventListener('DOMContentLoaded', () => {
 
     observer.observe(chipsPlayer, { childList: true });
 
-    function calcChips() {
-        chipsPlayer.innerText -= parseInt(rangeValue.innerText);
+    function calcChips(player) {
+        player.innerText -= parseInt(rangeValue.innerText);
+        chipsBank.innerText = parseInt(chipsBank.innerText) + parseInt(rangeValue.innerText);
         rangeValue.textContent = 5;
         rangeInput.value = 5;
-        if (chipsPlayer.innerText <= 5) {
-            rangeValue.textContent = chipsPlayer.innerText;
-            rangeInput.value = chipsPlayer.innerText;
+        if (player.innerText <= 5) {
+            rangeValue.textContent = player.innerText;
+            rangeInput.value = player.innerText;
+        }
+    }
+
+    // computer logic  
+
+    function makeDecision(trigger) {
+        const actCompetition = ['fold','equalize', 'raise'];
+        const actPrimary = ['fold', 'check', 'raise'];
+
+        let actionNumber;
+
+        if (trigger) {
+            actionNumber = getRandomNum(actCompetition.length);
+            return actCompetition[actionNumber];
+        } else {
+            actionNumber = getRandomNum(actPrimary.length);
+            return actPrimary[actionNumber];
+        }
+    }
+
+    function processLogic(target) {
+        let decision;
+
+        if (target.classList.contains('raise-btn')) {
+            decision = makeDecision(1);
+        } else {
+            decision = makeDecision(0);
+        }
+
+        switch(decision) {
+            case 'equalize':
+                calcChips(chipsComp);
+                break;
+            case 'raise':
+                console.log('raise');
+                break;
+            case 'check':
+                console.log('check');
+                break;
+            case 'fold':
+                console.log('fold');
         }
     }
 
