@@ -16,8 +16,8 @@ window.addEventListener('DOMContentLoaded', () => {
           coreText = document.querySelector('.hint__text');
 
     const chipsPlayer = document.querySelector('.count_player'),
-    chipsComp = document.querySelector('.count_comp');
-    const chipsBank = document.getElementById('bank');
+          chipsComp = document.querySelector('.count_comp'),
+          chipsBank = document.getElementById('bank');
     
     const playersC = document.querySelectorAll('[data-player]');
     const middles = document.querySelectorAll('[data-card="middle"]');
@@ -300,7 +300,7 @@ window.addEventListener('DOMContentLoaded', () => {
             looser[2].innerHTML++;
         }
 
-        switch (coreText.innerHTML) {
+        switch (coreText.innerText) {
             case 'Opponent won!':
                 addPoints(compScore, playerScore);
                 chipsComp.innerText = parseInt(chipsComp.innerText) + parseInt(chipsBank.innerText);
@@ -322,6 +322,7 @@ window.addEventListener('DOMContentLoaded', () => {
     handleArrayOnClick(hiddenCard, controlBtns);
 
     function handleArrayOnClick (array, btn) {
+        const spinner = document.querySelector('.spinner');
         let index = 0;
         let intervalId;
       
@@ -334,7 +335,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalId);
                 intervalId = null;
                 index = 0;
-                addAttr();
                 determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
                 increaseScore();
             }
@@ -342,15 +342,58 @@ window.addEventListener('DOMContentLoaded', () => {
             if (index > 3) {
                 clearInterval(intervalId);
                 intervalId = null;
-                removeAttr();
+                spinner.style.display = 'block';
             }
+
         };
+
+        function processLogic(target) {
+            let decision;
+            console.dir(target);
+            if (target.classList.contains('raise-btn')) {
+                decision = makeDecision(1);
+            } else {
+                decision = makeDecision(0);
+            }
+    
+            switch(decision) {
+                case 'equalize':
+                    calcChips(chipsComp);
+                    removeAttr()
+                    break;
+                case 'raise':
+                    console.log('raise');
+                    removeAttr()
+                    break;
+                case 'check':
+                    console.log('check');
+                    removeAttr()
+                    break;
+                case 'fold':
+                    console.log('fold');
+                    if (index >= 8) return;
+                    coreText.innerText = 'Your opponent fold. You won!'
+                    increaseScore(); // change
+                    changeEmoji();
+                    setTimeout(() => {
+                        showRestartWindow();
+                        clearInterval(intervalId);
+                        intervalId = null;
+                        index = 0
+                        removeAttr()
+                    }, 1000);
+                    
+            }
+        }
       
         const handleClick = (target) => {
           if (!intervalId) {
             intervalId = setInterval(handleCards, 500);
+            setTimeout(() => {
+                processLogic(target);
+                spinner.style.display = 'none';
+            }, 3000);
             addAttr();
-            processLogic(target)
           } else {
             clearInterval(intervalId);
             intervalId = null;
@@ -381,7 +424,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
         
-                overlay.style.display = 'block';
+                overlay.style.display = 'flex';
         
                 const reloadBtn = document.querySelector('.reload'),
                     close = document.querySelector('.close');
@@ -406,7 +449,7 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
         
         overlay.classList.add('overlay_transparent');
-        overlay.style.display = 'block';
+        overlay.style.display = 'flex';
 
         overlay.addEventListener('click', reload, {once: true});
     }
@@ -913,30 +956,6 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             actionNumber = getRandomNum(actPrimary.length);
             return actPrimary[actionNumber];
-        }
-    }
-
-    function processLogic(target) {
-        let decision;
-
-        if (target.classList.contains('raise-btn')) {
-            decision = makeDecision(1);
-        } else {
-            decision = makeDecision(0);
-        }
-
-        switch(decision) {
-            case 'equalize':
-                calcChips(chipsComp);
-                break;
-            case 'raise':
-                console.log('raise');
-                break;
-            case 'check':
-                console.log('check');
-                break;
-            case 'fold':
-                console.log('fold');
         }
     }
 
