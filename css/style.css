@@ -590,6 +590,7 @@ td {
 }
 
 .hints {
+    text-align: center;
     margin-top: 100px;
     padding: 15px;
     min-height: 250px;
@@ -605,9 +606,6 @@ td {
     box-shadow: 0 0 30px rgb(255, 255, 255);
 }
 
-.hint__title, .hint__subtitle {
-    text-align: center;
-}
 
 .hint__subtitle {
     margin-top: 10px;
@@ -620,7 +618,6 @@ td {
 .hint__text {
     margin-top: 20px;
     font-size: 14px;
-    text-align: center;
 }
 
 .hint-img {

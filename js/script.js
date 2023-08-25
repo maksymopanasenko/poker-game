@@ -13,7 +13,8 @@ window.addEventListener('DOMContentLoaded', () => {
           tutorialBtns = document.querySelector('.buttons__wrapper_tutorial'),
           card = document.querySelectorAll('.card__container'),
           subtitleText = document.querySelector('.hint__subtitle'),
-          coreText = document.querySelector('.hint__text');
+          coreText = document.querySelector('.hint__text'),
+          additionalText = document.querySelector('.hint__additional');
 
     const chipsPlayer = document.querySelector('.count_player'),
           chipsComp = document.querySelector('.count_comp'),
@@ -287,6 +288,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (document.querySelector('.count_player').innerText <= 5) return;
         bar.classList.toggle('show');
     });
+
     raiseBtn.addEventListener('click', () => bar.classList.remove('show'));
 
     function increaseScore() {
@@ -325,16 +327,17 @@ window.addEventListener('DOMContentLoaded', () => {
         const spinner = document.querySelector('.spinner');
         let index = 0;
         let intervalId;
+        let clickCounter = 0;
       
         const handleCards = () => {
-          showCardContents(array[index], index+1)
-          index++;
-          addAttr();
-      
+            showCardContents(array[index], index+1)
+            index++;
+
             if (index >= array.length) {
                 clearInterval(intervalId);
                 intervalId = null;
                 index = 0;
+                clickCounter = 0;
                 determineWinner(showMatches('[data-card=player]'), showMatches('[data-card=comp]'));
                 increaseScore();
             }
@@ -342,58 +345,77 @@ window.addEventListener('DOMContentLoaded', () => {
             if (index > 3) {
                 clearInterval(intervalId);
                 intervalId = null;
-                spinner.style.display = 'block';
+                removeAttr();
             }
 
         };
 
         function processLogic(target) {
             let decision;
-            console.dir(target);
+            spinner.style.display = 'block';
+
             if (target.classList.contains('raise-btn')) {
-                decision = makeDecision(1);
+                do {
+                    decision = makeDecision(1);
+                } while (clickCounter == 0 && decision == 'fold');
             } else {
-                decision = makeDecision(0);
+                do {
+                    decision = makeDecision(0);
+                } while (clickCounter == 0 && decision == 'fold');
             }
+
     
             switch(decision) {
                 case 'equalize':
-                    calcChips(chipsComp);
-                    removeAttr()
+                    // calcChips(chipsComp);
+                    // delayHandlingCards();
+                    console.log('equalize');
+                    new Promise((resolve, reject) => {
+                        delayHandlingCards();
+                        resolve();
+                    }).then(() => calcChips(chipsComp));
                     break;
                 case 'raise':
                     console.log('raise');
-                    removeAttr()
+                    delayHandlingCards();
                     break;
                 case 'check':
                     console.log('check');
-                    removeAttr()
+                    delayHandlingCards();
                     break;
                 case 'fold':
                     console.log('fold');
-                    if (index >= 8) return;
-                    coreText.innerText = 'Your opponent fold. You won!'
-                    increaseScore(); // change
-                    changeEmoji();
-                    setTimeout(() => {
-                        showRestartWindow();
+                    if (index >= 9) return;
+
+                    setTimeout(()=> {
+                        spinner.style.display = 'none';
+                        removeAttr();
                         clearInterval(intervalId);
                         intervalId = null;
-                        index = 0
-                        removeAttr()
-                    }, 1000);
-                    
+                        index = 0;
+                        clickCounter = 0;
+                        showRestartWindow();
+                    }, getRandomNum(1000)+500);
+
+                    coreText.innerText = 'You won!'
+                    additionalText.innerText = 'Your opponent fold.'
+                    increaseScore(); // change
+                    changeEmoji();
             }
+        }
+
+        function delayHandlingCards() {
+            const randomTime = getRandomNum(1000)+500;
+            return setTimeout(()=> {
+                intervalId = setInterval(handleCards, 500);
+                spinner.style.display = 'none';
+            }, randomTime);
         }
       
         const handleClick = (target) => {
           if (!intervalId) {
-            intervalId = setInterval(handleCards, 500);
-            setTimeout(() => {
-                processLogic(target);
-                spinner.style.display = 'none';
-            }, 3000);
             addAttr();
+            processLogic(target);
           } else {
             clearInterval(intervalId);
             intervalId = null;
@@ -402,6 +424,12 @@ window.addEventListener('DOMContentLoaded', () => {
       
         btn.addEventListener('click', (e) => {
             const target = e.target;
+
+            if (clickCounter == 0) {
+                calcChips(chipsPlayer);
+                calcChips(chipsComp);
+            }
+
             if (target && target.classList.contains('start-btn')) {
                 handleClick(target);
                 gameBtns.style.display = 'flex';
@@ -436,8 +464,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 reloadBtn.addEventListener('click', () => {              
                     reload();
                     index = 0;
+                    clickCounter = 0;
                 });
             }
+
+            clickCounter++;
         });
       };
 
@@ -497,7 +528,8 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         
         subtitleText.innerText = "Lorem";
-        coreText.innerHTML = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!';
+        coreText.innerHTML = 'Lorem ipsum!';
+        additionalText.innerHTML = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!';
     }
 
     // combinations
@@ -944,18 +976,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // computer logic  
 
-    function makeDecision(trigger) {
-        const actCompetition = ['fold','equalize', 'raise'];
-        const actPrimary = ['fold', 'check', 'raise'];
+    function makeDecision(flag) {
+        let actionProbability = getRandomNum(100);
 
-        let actionNumber;
-
-        if (trigger) {
-            actionNumber = getRandomNum(actCompetition.length);
-            return actCompetition[actionNumber];
+        if (flag) {
+            if (actionProbability >= 0 && actionProbability <= 50) return 'equalize';
+            if (actionProbability > 50 && actionProbability <= 85) return 'raise';
+            return 'fold';
         } else {
-            actionNumber = getRandomNum(actPrimary.length);
-            return actPrimary[actionNumber];
+            if (actionProbability >= 0 && actionProbability <= 50) return 'check';
+            if (actionProbability > 50 && actionProbability <= 85) return 'raise';
+            return 'fold';
         }
     }
 
