@@ -328,6 +328,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let index = 0;
         let intervalId;
         let clickCounter = 0;
+        let currentRate = 0;
       
         const handleCards = () => {
             showCardContents(array[index], index+1)
@@ -367,15 +368,19 @@ window.addEventListener('DOMContentLoaded', () => {
     
             switch(decision) {
                 case 'equalize':
-                    // calcChips(chipsComp);
-                    // delayHandlingCards();
                     console.log('equalize');
-                    new Promise((resolve, reject) => {
-                        delayHandlingCards();
-                        resolve();
-                    }).then(() => calcChips(chipsComp));
+                    (async () => {
+                        await delayHandlingCards();
+                        chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
+                        chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
+                    })();
                     break;
                 case 'raise':
+                    // const result = getRaisedValue(parseInt(chipsComp.innerText))
+                    // chipsComp.innerText = parseInt(chipsComp.innerText) - result;
+                    // chipsBank.innerText = parseInt(chipsBank.innerText) + result;
+                    chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
+                    chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
                     console.log('raise');
                     delayHandlingCards();
                     break;
@@ -389,6 +394,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     setTimeout(()=> {
                         spinner.style.display = 'none';
+                        chipsPlayer.innerText = parseInt(chipsPlayer.innerText) + parseInt(chipsBank.innerText);
+                        chipsBank.innerText = 0;
                         removeAttr();
                         clearInterval(intervalId);
                         intervalId = null;
@@ -399,17 +406,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     coreText.innerText = 'You won!'
                     additionalText.innerText = 'Your opponent fold.'
-                    increaseScore(); // change
+                    increaseScore();
                     changeEmoji();
             }
         }
 
         function delayHandlingCards() {
             const randomTime = getRandomNum(1000)+500;
-            return setTimeout(()=> {
-                intervalId = setInterval(handleCards, 500);
-                spinner.style.display = 'none';
-            }, randomTime);
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    intervalId = setInterval(handleCards, 500);
+                    spinner.style.display = 'none';
+                    resolve();
+                }, randomTime);
+            });
         }
       
         const handleClick = (target) => {
@@ -435,7 +445,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
             } else if (target && target.classList.contains('raise-btn')) {
-                handleClick(target);
+                currentRate = parseInt(rangeValue.innerText);
+                handleClick(target);                
                 calcChips(chipsPlayer);
             } else if (target && target.classList.contains('check-btn')) {
                 handleClick(target);
@@ -455,13 +466,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 overlay.style.display = 'flex';
         
                 const reloadBtn = document.querySelector('.reload'),
-                    close = document.querySelector('.close');
+                      close = document.querySelector('.close');
                 
                 close.addEventListener('click', () => {
                     overlay.style.display = 'none';
                 });
         
-                reloadBtn.addEventListener('click', () => {              
+                reloadBtn.addEventListener('click', () => {    
+                    chipsComp.innerText = parseInt(chipsComp.innerText) + parseInt(chipsBank.innerText);
+                    chipsBank.innerText = 0;          
                     reload();
                     index = 0;
                     clickCounter = 0;
@@ -980,8 +993,8 @@ window.addEventListener('DOMContentLoaded', () => {
         let actionProbability = getRandomNum(100);
 
         if (flag) {
-            if (actionProbability >= 0 && actionProbability <= 50) return 'equalize';
-            if (actionProbability > 50 && actionProbability <= 85) return 'raise';
+            if (actionProbability >= 0 && actionProbability <= 55) return 'equalize';
+            if (actionProbability > 55 && actionProbability <= 85) return 'raise';
             return 'fold';
         } else {
             if (actionProbability >= 0 && actionProbability <= 50) return 'check';
@@ -989,6 +1002,17 @@ window.addEventListener('DOMContentLoaded', () => {
             return 'fold';
         }
     }
+
+    // function getRaisedValue(currSum) {
+    //     let valueProbability = getRandomNum(currSum);
+
+    //     if (valueProbability >= 0 && valueProbability <= Math.floor((currSum/100) * 90)) {
+    //         return getRandomNum(Math.floor(currSum - currSum/100 * 90));
+    //     } else {
+    //         console.log('nothing');
+    //     }
+        
+    // }
 
 
 
