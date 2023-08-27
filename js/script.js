@@ -329,6 +329,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let intervalId;
         let clickCounter = 0;
         let currentRate = 0;
+        let resultRaise = 0;
       
         const handleCards = () => {
             showCardContents(array[index], index+1)
@@ -352,41 +353,55 @@ window.addEventListener('DOMContentLoaded', () => {
         };
 
         function processLogic(target) {
+            if (clickCounter == 0) {
+                intervalId = setInterval(handleCards, 500);
+                return;
+            };
+
             let decision;
             spinner.style.display = 'block';
+            
+            checkBtn.classList.add('check-btn');
+            checkBtn.classList.remove('equal-btn');
 
             if (target.classList.contains('raise-btn')) {
-                do {
-                    decision = makeDecision(1);
-                } while (clickCounter == 0 && decision == 'fold');
+                decision = makeDecision(1);
             } else {
-                do {
-                    decision = makeDecision(0);
-                } while (clickCounter == 0 && decision == 'fold');
+                decision = makeDecision(0);
             }
 
-    
             switch(decision) {
                 case 'equalize':
                     console.log('equalize');
                     (async () => {
-                        await delayHandlingCards();
+                        await delayHandingCards();
                         chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
                         chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
                     })();
                     break;
                 case 'raise':
-                    // const result = getRaisedValue(parseInt(chipsComp.innerText))
-                    // chipsComp.innerText = parseInt(chipsComp.innerText) - result;
-                    // chipsBank.innerText = parseInt(chipsBank.innerText) + result;
-                    chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
-                    chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
+                        // chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
+                        // chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
+
+                        (async () => {
+                            await delayHandingCards(1);
+                            resultRaise = getRaisedValue(parseInt(chipsComp.innerText));
+                            
+                            chipsComp.innerText = parseInt(chipsComp.innerText) - resultRaise - currentRate;
+                            chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise + currentRate;
+                            checkBtn.innerText = 'Equalize';
+                            checkBtn.classList.add('equal-btn');
+                            checkBtn.classList.remove('check-btn');
+                            removeAttr();
+
+                            currentRate = 0;
+                        })();
+
                     console.log('raise');
-                    delayHandlingCards();
                     break;
                 case 'check':
                     console.log('check');
-                    delayHandlingCards();
+                    delayHandingCards();
                     break;
                 case 'fold':
                     console.log('fold');
@@ -411,11 +426,16 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        function delayHandlingCards() {
+        function delayHandingCards(x) {
             const randomTime = getRandomNum(1000)+500;
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    intervalId = setInterval(handleCards, 500);
+                    if (!x) {
+                        intervalId = setInterval(handleCards, 500);
+                    } else {
+                        clearInterval(intervalId);
+                        intervalId = null;
+                    }
                     spinner.style.display = 'none';
                     resolve();
                 }, randomTime);
@@ -448,6 +468,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 currentRate = parseInt(rangeValue.innerText);
                 handleClick(target);                
                 calcChips(chipsPlayer);
+            } else if (target && target.classList.contains('equal-btn')) {
+                chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
+                chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
+                resultRaise = 0;
+                checkBtn.innerText = 'Check';
+                handleClick(target);
             } else if (target && target.classList.contains('check-btn')) {
                 handleClick(target);
             } else if (target && target.classList.contains('fold-btn')) {
@@ -1003,16 +1029,17 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // function getRaisedValue(currSum) {
-    //     let valueProbability = getRandomNum(currSum);
+    function getRaisedValue(currSum) {
+        let valueProbability = getRandomNum(currSum);
 
-    //     if (valueProbability >= 0 && valueProbability <= Math.floor((currSum/100) * 90)) {
-    //         return getRandomNum(Math.floor(currSum - currSum/100 * 90));
-    //     } else {
-    //         console.log('nothing');
-    //     }
-        
-    // }
+        if (valueProbability == currSum) {
+            return currSum;
+        } else if (valueProbability >= 0 && valueProbability < Math.floor((currSum/100) * 90)) {
+            return getRandomNum(Math.floor(currSum - currSum/100 * 90) + 1);
+        } else if (valueProbability >= Math.floor((currSum/100) * 90) && valueProbability < currSum) {
+            return getRandomNum(Math.floor(currSum - currSum/100 * 10) - 1);
+        }
+    }
 
 
 
