@@ -67,6 +67,14 @@ window.addEventListener('DOMContentLoaded', () => {
           hearts = [],
           spades = [];
 
+    const observer = new MutationObserver(function(mutationsList) {
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                rangeInput.max = mutation.target.textContent;
+            }
+        }
+    });
+
     // variables above !!!!!!!!!!!!!!!!!!
 
     // start tutorial
@@ -218,7 +226,7 @@ window.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < tempArray.length; i++) {
             if (tempArray[i + 1] === tempArray[i]&& tempArray[i + 2] === tempArray[i + 1] && tempArray[i + 3] === tempArray[i + 2] && tempArray[i + 4] === tempArray[i + 3]) {
                 
-                console.log(`${tempArray[i]} found number`);
+                // console.log(`${tempArray[i]} found number`);
                 digits.length = 0;
                 executeCardForming();  
             }
@@ -267,7 +275,7 @@ window.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < sortedArr.length; i++) {
             if (sortedArr[i + 1] === sortedArr[i]) {
 
-                console.log(`${sortedArr[i]} found ${suitName}`);
+                // console.log(`${sortedArr[i]} found ${suitName}`);
                 suitArr.length = 0;
                 setSuit();
                 getherCollection();
@@ -352,6 +360,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
         };
 
+        function getRaisedValue(currSum) {
+            let valueProbability = getRandomNum(currSum);
+    
+            if (valueProbability == currSum) {
+                return currSum;
+            } else if (valueProbability >= 0 && valueProbability < Math.floor((currSum/100) * 90)) {
+                return getRandomNum(Math.floor(currSum - currSum/100 * 90) + 1);
+            } else if (valueProbability >= Math.floor((currSum/100) * 90) && valueProbability < currSum) {
+                return getRandomNum(Math.floor(currSum - currSum/100 * 10) - 1);
+            }
+        }
+
         function processLogic(target) {
             if (clickCounter == 0) {
                 intervalId = setInterval(handleCards, 500);
@@ -377,14 +397,23 @@ window.addEventListener('DOMContentLoaded', () => {
                         await delayHandingCards();
                         chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
                         chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
+                        currentRate = 0;
                     })();
                     break;
                 case 'raise':
-                        // chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
-                        // chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
-
                         (async () => {
+                            
+                            if (chipsComp.innerText == currentRate) {
+                                delayHandingCards();
+                                chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
+                                chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
+                                removeAttr();
+                                currentRate = 0;
+                                return;
+                            };
+
                             await delayHandingCards(1);
+
                             resultRaise = getRaisedValue(parseInt(chipsComp.innerText));
                             
                             chipsComp.innerText = parseInt(chipsComp.innerText) - resultRaise - currentRate;
@@ -392,8 +421,8 @@ window.addEventListener('DOMContentLoaded', () => {
                             checkBtn.innerText = 'Equalize';
                             checkBtn.classList.add('equal-btn');
                             checkBtn.classList.remove('check-btn');
-                            removeAttr();
 
+                            removeAttr();
                             currentRate = 0;
                         })();
 
@@ -455,6 +484,14 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             const target = e.target;
 
+            if (chipsPlayer.innerText > chipsComp.innerText) {
+                observer.disconnect();
+                observer.observe( chipsPlayer, { childList: true });
+            } else {
+                observer.disconnect();
+                observer.observe( chipsComp, { childList: true });
+            }
+
             if (clickCounter == 0) {
                 calcChips(chipsPlayer);
                 calcChips(chipsComp);
@@ -465,9 +502,17 @@ window.addEventListener('DOMContentLoaded', () => {
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
             } else if (target && target.classList.contains('raise-btn')) {
+                
+                if (resultRaise) {
+                    chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
+                    chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
+                    
+                    checkBtn.innerText = 'Check';
+                }
                 currentRate = parseInt(rangeValue.innerText);
                 handleClick(target);                
                 calcChips(chipsPlayer);
+                resultRaise = 0;
             } else if (target && target.classList.contains('equal-btn')) {
                 chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
                 chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
@@ -992,16 +1037,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     rangeInput.max = chipsPlayer.innerHTML;
 
-    const observer = new MutationObserver(function(mutationsList) {
-        for(let mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                rangeInput.max = mutation.target.textContent;
-            }
-        }
-    });
-
-    observer.observe(chipsPlayer, { childList: true });
-
     function calcChips(player) {
         player.innerText -= parseInt(rangeValue.innerText);
         chipsBank.innerText = parseInt(chipsBank.innerText) + parseInt(rangeValue.innerText);
@@ -1026,18 +1061,6 @@ window.addEventListener('DOMContentLoaded', () => {
             if (actionProbability >= 0 && actionProbability <= 50) return 'check';
             if (actionProbability > 50 && actionProbability <= 85) return 'raise';
             return 'fold';
-        }
-    }
-
-    function getRaisedValue(currSum) {
-        let valueProbability = getRandomNum(currSum);
-
-        if (valueProbability == currSum) {
-            return currSum;
-        } else if (valueProbability >= 0 && valueProbability < Math.floor((currSum/100) * 90)) {
-            return getRandomNum(Math.floor(currSum - currSum/100 * 90) + 1);
-        } else if (valueProbability >= Math.floor((currSum/100) * 90) && valueProbability < currSum) {
-            return getRandomNum(Math.floor(currSum - currSum/100 * 10) - 1);
         }
     }
 
