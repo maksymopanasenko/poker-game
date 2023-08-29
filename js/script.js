@@ -392,7 +392,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             switch(decision) {
                 case 'equalize':
-                    console.log('equalize');
+                    // console.log('equalize');
                     (async () => {
                         await delayHandingCards();
                         chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
@@ -426,14 +426,14 @@ window.addEventListener('DOMContentLoaded', () => {
                             currentRate = 0;
                         })();
 
-                    console.log('raise');
+                    // console.log('raise');
                     break;
                 case 'check':
-                    console.log('check');
+                    // console.log('check');
                     delayHandingCards();
                     break;
                 case 'fold':
-                    console.log('fold');
+                    // console.log('fold');
                     if (index >= 9) return;
 
                     setTimeout(()=> {
@@ -480,9 +480,13 @@ window.addEventListener('DOMContentLoaded', () => {
             intervalId = null;
           }
         };
-      
+        let click = 1;
         btn.addEventListener('click', (e) => {
             const target = e.target;
+
+
+            console.log('click ' + click);
+            click++;
 
             if (chipsPlayer.innerText > chipsComp.innerText) {
                 observer.disconnect();
@@ -559,9 +563,19 @@ window.addEventListener('DOMContentLoaded', () => {
     // restart window
     
     function showRestartWindow() {
-        overlay.innerHTML = `
-            <p class="overlay__info">Click anywhere to start the next hand</p>
-        `;
+        overlay.innerHTML = '';
+        const text = document.createElement('p');
+        text.className = 'overlay__info';
+
+        if (chipsPlayer.innerText == 0) {
+            text.innerText = "You are bankrupt. Maybe next time you'll be more lucky";
+        } else if (chipsComp.innerText == 0) {
+            text.innerText = "Your opponent is bankrupt. You won this game";
+        } else {
+            text.innerText = 'Click anywhere to start the next hand';
+        }
+
+        overlay.append(text);
         
         overlay.classList.add('overlay_transparent');
         overlay.style.display = 'flex';
@@ -600,6 +614,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // restart 
 
     function reload() {
+        if (chipsPlayer.innerText == 0 || chipsComp.innerText == 0) location.reload();
+
         overlay.style.display = 'none';
         startBtnWrapper.style.display = 'flex';
         gameBtns.style.display = 'none';
