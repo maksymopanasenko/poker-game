@@ -292,7 +292,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const rateBtn = document.querySelector('.rate'),
           bar = document.querySelector('.buttons__bar');
 
-    rateBtn.addEventListener('click', () => {
+    rateBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (document.querySelector('.count_player').innerText <= 5) return;
         bar.classList.toggle('show');
     });
@@ -362,6 +363,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
         function getRaisedValue(currSum) {
             let valueProbability = getRandomNum(currSum);
+            const playersChips = document.querySelector('.count_player');
+
+            if (playersChips.innerText < currSum) return parseInt(playersChips.innerText);
     
             if (valueProbability == currSum) {
                 return currSum;
@@ -392,23 +396,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
             switch(decision) {
                 case 'equalize':
-                    // console.log('equalize');
+                    console.log('equalize');
                     (async () => {
                         await delayHandingCards();
                         chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
                         chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
                         currentRate = 0;
+
+                        if (chipsComp.innerText == 0 || chipsPlayer.innerText == 0) {
+                            raiseBtn.style.display = 'none';
+                        }
                     })();
                     break;
                 case 'raise':
                         (async () => {
                             
                             if (chipsComp.innerText == currentRate) {
-                                delayHandingCards();
+                                await delayHandingCards();
                                 chipsComp.innerText = parseInt(chipsComp.innerText) - currentRate;
                                 chipsBank.innerText = parseInt(chipsBank.innerText) + currentRate;
                                 removeAttr();
                                 currentRate = 0;
+
+                                if (chipsComp.innerText == 0 || chipsPlayer.innerText == 0) {
+                                    raiseBtn.style.display = 'none';
+                                }
                                 return;
                             };
 
@@ -416,24 +428,27 @@ window.addEventListener('DOMContentLoaded', () => {
 
                             resultRaise = getRaisedValue(parseInt(chipsComp.innerText));
                             
-                            chipsComp.innerText = parseInt(chipsComp.innerText) - resultRaise - currentRate;
+                            chipsComp.innerText = parseInt(chipsComp.innerText) - resultRaise - currentRate; // need to solve
                             chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise + currentRate;
                             checkBtn.innerText = 'Equalize';
                             checkBtn.classList.add('equal-btn');
                             checkBtn.classList.remove('check-btn');
 
+                            if (chipsComp.innerText == 0 || chipsPlayer.innerText == 0) {
+                                raiseBtn.style.display = 'none';
+                            }
                             removeAttr();
                             currentRate = 0;
                         })();
 
-                    // console.log('raise');
+                    console.log('raise');
                     break;
                 case 'check':
-                    // console.log('check');
+                    console.log('check');
                     delayHandingCards();
                     break;
                 case 'fold':
-                    // console.log('fold');
+                    console.log('fold');
                     if (index >= 9) return;
 
                     setTimeout(()=> {
@@ -480,20 +495,16 @@ window.addEventListener('DOMContentLoaded', () => {
             intervalId = null;
           }
         };
-        let click = 1;
+        
         btn.addEventListener('click', (e) => {
             const target = e.target;
 
-
-            console.log('click ' + click);
-            click++;
-
-            if (chipsPlayer.innerText > chipsComp.innerText) {
+            if (+chipsPlayer.innerText > +chipsComp.innerText) {
                 observer.disconnect();
-                observer.observe( chipsPlayer, { childList: true });
+                observer.observe(chipsComp, { childList: true });
             } else {
                 observer.disconnect();
-                observer.observe( chipsComp, { childList: true });
+                observer.observe(chipsPlayer, { childList: true });
             }
 
             if (clickCounter == 0) {
