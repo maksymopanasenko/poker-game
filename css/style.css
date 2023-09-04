@@ -185,7 +185,8 @@
     margin-bottom: 15px;
 }
 
-.rate {
+.rate,
+.check_rate {
     position: absolute;
     right: -15px;
     top: -10px;

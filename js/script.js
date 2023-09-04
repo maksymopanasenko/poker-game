@@ -290,6 +290,7 @@ window.addEventListener('DOMContentLoaded', () => {
           raiseBtn = document.querySelector('#raise'),
           foldBtn = document.querySelector('#fold');
     const rateBtn = document.querySelector('.rate'),
+          checkRate = document.querySelector('.check_rate'),
           bar = document.querySelector('.buttons__bar');
 
     rateBtn.addEventListener('click', (e) => {
@@ -363,16 +364,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
         function getRaisedValue(currSum) {
             let valueProbability = getRandomNum(currSum);
+            let result;
             const playersChips = document.querySelector('.count_player');
-
-            if (playersChips.innerText < currSum) return parseInt(playersChips.innerText);
-    
+            // returned zero! need to solve
             if (valueProbability == currSum) {
+                if (playersChips.innerText < currSum) return parseInt(playersChips.innerText);
                 return currSum;
             } else if (valueProbability >= 0 && valueProbability < Math.floor((currSum/100) * 90)) {
-                return getRandomNum(Math.floor(currSum - currSum/100 * 90) + 1);
+                result = getRandomNum(Math.floor(currSum - currSum/100 * 90) + 1);
+                if (playersChips.innerText < result) return parseInt(playersChips.innerText);
+                return result;
             } else if (valueProbability >= Math.floor((currSum/100) * 90) && valueProbability < currSum) {
-                return getRandomNum(Math.floor(currSum - currSum/100 * 10) - 1);
+                result = getRandomNum(Math.floor(currSum - currSum/100 * 10) - 1);
+                if (playersChips.innerText < result) return parseInt(playersChips.innerText);
+                return result;
             }
         }
 
@@ -428,9 +433,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
                             resultRaise = getRaisedValue(parseInt(chipsComp.innerText));
                             
+                            checkRate.style.display = 'flex';
+                            checkRate.innerText = resultRaise;
+
                             chipsComp.innerText = parseInt(chipsComp.innerText) - resultRaise - currentRate; // need to solve
                             chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise + currentRate;
-                            checkBtn.innerText = 'Equalize';
+
+                            checkBtn.firstElementChild.innerText = 'Equalize';
                             checkBtn.classList.add('equal-btn');
                             checkBtn.classList.remove('check-btn');
 
@@ -521,20 +530,25 @@ window.addEventListener('DOMContentLoaded', () => {
                 if (resultRaise) {
                     chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
                     chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
-                    
-                    checkBtn.innerText = 'Check';
+                    checkRate.style.display = 'none';
+                    checkBtn.firstElementChild.innerText = 'Check';
                 }
                 currentRate = parseInt(rangeValue.innerText);
                 handleClick(target);                
                 calcChips(chipsPlayer);
                 resultRaise = 0;
-            } else if (target && target.classList.contains('equal-btn')) {
+            } else if (target && target.classList.contains('equal-btn') || target.closest('.equal-btn')) {
+
                 chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
                 chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
+                if (chipsComp.innerText == 0 || chipsPlayer.innerText == 0) {
+                    raiseBtn.style.display = 'none';
+                }
                 resultRaise = 0;
-                checkBtn.innerText = 'Check';
+                checkRate.style.display = 'none';
+                checkBtn.firstElementChild.innerText = 'Check';
                 handleClick(target);
-            } else if (target && target.classList.contains('check-btn')) {
+            } else if (target && target.classList.contains('check-btn') || target.closest('.check-btn')) {
                 handleClick(target);
             } else if (target && target.classList.contains('fold-btn')) {
                 overlay.innerHTML=`
@@ -558,7 +572,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     overlay.style.display = 'none';
                 });
         
-                reloadBtn.addEventListener('click', () => {    
+                reloadBtn.addEventListener('click', () => {  
+                    checkRate.style.display = 'none';
+                    raiseBtn.style.display = 'block';
+                    checkBtn.firstElementChild.innerText = 'Check';
+                    resultRaise = 0;
                     chipsComp.innerText = parseInt(chipsComp.innerText) + parseInt(chipsBank.innerText);
                     chipsBank.innerText = 0;          
                     reload();
@@ -584,6 +602,7 @@ window.addEventListener('DOMContentLoaded', () => {
             text.innerText = "Your opponent is bankrupt. You won this game";
         } else {
             text.innerText = 'Click anywhere to start the next hand';
+            raiseBtn.style.display = 'block';
         }
 
         overlay.append(text);
@@ -1081,12 +1100,13 @@ window.addEventListener('DOMContentLoaded', () => {
         let actionProbability = getRandomNum(100);
 
         if (flag) {
-            if (actionProbability >= 0 && actionProbability <= 55) return 'equalize';
-            if (actionProbability > 55 && actionProbability <= 85) return 'raise';
+            if (actionProbability >= 0 && actionProbability <= 65) return 'equalize';
+            if (actionProbability > 65 && actionProbability <= 90) return 'raise';
             return 'fold';
         } else {
-            if (actionProbability >= 0 && actionProbability <= 50) return 'check';
-            if (actionProbability > 50 && actionProbability <= 85) return 'raise';
+            if (parseInt(chipsComp.innerText) == 0 || parseInt(chipsPlayer.innerText) == 0) return 'check';
+            if (actionProbability >= 0 && actionProbability <= 65) return 'check';
+            if (actionProbability > 65 && actionProbability <= 95) return 'raise';
             return 'fold';
         }
     }
