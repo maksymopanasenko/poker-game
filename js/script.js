@@ -299,8 +299,6 @@ window.addEventListener('DOMContentLoaded', () => {
         bar.classList.toggle('show');
     });
 
-    raiseBtn.addEventListener('click', () => bar.classList.remove('show'));
-
     function increaseScore() {
         const playerScore = document.querySelectorAll('.stats__player .stats__result'),
               compScore = document.querySelectorAll('.stats__computer .stats__result');
@@ -432,6 +430,8 @@ window.addEventListener('DOMContentLoaded', () => {
                             await delayHandingCards(1);
 
                             resultRaise = getRaisedValue(parseInt(chipsComp.innerText));
+
+                            if (resultRaise == chipsPlayer.innerText) raiseBtn.style.display = 'none';
                             
                             checkRate.style.display = 'flex';
                             checkRate.innerText = resultRaise;
@@ -508,6 +508,10 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             const target = e.target;
 
+            if (target.nodeName === 'DIV') return;
+
+            bar.classList.remove('show');
+
             if (+chipsPlayer.innerText > +chipsComp.innerText) {
                 observer.disconnect();
                 observer.observe(chipsComp, { childList: true });
@@ -525,8 +529,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 handleClick(target);
                 gameBtns.style.display = 'flex';
                 startBtnWrapper.style.display = 'none';
+                additionalText.innerText = 'Use the control buttons to make a move.';
             } else if (target && target.classList.contains('raise-btn')) {
-                
                 if (resultRaise) {
                     chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
                     chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
@@ -538,6 +542,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 calcChips(chipsPlayer);
                 resultRaise = 0;
             } else if (target && target.classList.contains('equal-btn') || target.closest('.equal-btn')) {
+                rangeValue.innerText = chipsPlayer.innerText < 5 ? chipsPlayer.innerText : '5';
+                rangeInput.value = rangeValue.innerText;
 
                 chipsPlayer.innerText = parseInt(chipsPlayer.innerText) - resultRaise;
                 chipsBank.innerText = parseInt(chipsBank.innerText) + resultRaise;
@@ -549,6 +555,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 checkBtn.firstElementChild.innerText = 'Check';
                 handleClick(target);
             } else if (target && target.classList.contains('check-btn') || target.closest('.check-btn')) {
+                rangeValue.innerText = chipsPlayer.innerText < 5 ? chipsPlayer.innerText : '5';
+                rangeInput.value = rangeValue.innerText;
                 handleClick(target);
             } else if (target && target.classList.contains('fold-btn')) {
                 overlay.innerHTML=`
@@ -587,7 +595,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             clickCounter++;
         });
-      };
+    };
 
     // restart window
     
@@ -646,6 +654,11 @@ window.addEventListener('DOMContentLoaded', () => {
     function reload() {
         if (chipsPlayer.innerText == 0 || chipsComp.innerText == 0) location.reload();
 
+        document.querySelectorAll('[data-card=comp').forEach(card => {
+            card.classList.add('card__reverse');
+            card.firstElementChild.classList.add('hidden');
+        });
+
         overlay.style.display = 'none';
         startBtnWrapper.style.display = 'flex';
         gameBtns.style.display = 'none';
@@ -658,8 +671,8 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         
         subtitleText.innerText = "Lorem";
-        coreText.innerHTML = 'Lorem ipsum!';
-        additionalText.innerHTML = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!';
+        coreText.innerText = 'Lorem ipsum!';
+        additionalText.innerText = 'Click "START" to start the hand.';
     }
 
     // combinations
@@ -709,6 +722,11 @@ window.addEventListener('DOMContentLoaded', () => {
             }
             // need to develop cases tree
         }
+
+        document.querySelectorAll('[data-card=comp').forEach(card => {
+            card.classList.remove('card__reverse', 'card__appear');
+            card.firstElementChild.classList.remove('hidden');
+        });
         
         changeEmoji();
         setTimeout(() => showRestartWindow(), 2000);

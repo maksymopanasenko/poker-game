@@ -39,6 +39,9 @@
     font-weight: 700;
     color: red;
     animation: puls 4s infinite;
+    position: relative;
+    right: 77px;
+    bottom: -20px;
 }
 
 .modal {
@@ -270,12 +273,19 @@
     align-items: center;
 }
 
-.player__chips img {
+.chips {
     display: block;
     margin: 0 auto;
     margin-bottom: 15px;
     width: 40px;
     height: 40px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    margin-bottom: 15px;
 }
 
 .player_name {
@@ -508,7 +518,6 @@
 button:hover {
     opacity: 1;
     box-shadow: 0px 0px 15px rgb(181, 247, 247);
-    
 }
 
 button:active {
@@ -643,10 +652,14 @@ td {
     display: block;
 }
 
-.player__chips .spinner {
+.hidden {
     display: none;
 }
 
 .comp_name {
     height: 75px;
+}
+
+.card__reverse {
+    background: url('../img/cards/side.png') center/cover no-repeat;
 }

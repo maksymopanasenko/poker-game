@@ -34,10 +34,10 @@
         <div class="front__space">
             <div class="inner_card">
                 <div class="player__chips">
-                    <img src="img/chips-black-red-blue.png" alt="chips">
+                    <img src="img/chips-black-red-blue.png" alt="chips" class="chips">
                     <div class="player_name comp_name">
                         <span class="name">Computer</span>: <span class="count count_comp">1000</span>
-                        <img src="img/wired-outline-332-loader-3.gif" alt="spinner" class="spinner">
+                        <img src="img/wired-outline-332-loader-3.gif" alt="spinner" class="spinner hidden">
                     </div>
                 </div>
                 <div class="game__objects">
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="player__chips">
-                    <img src="img/chips-black-red-blue.png" alt="chips">
+                    <img src="img/chips-black-red-blue.png" alt="chips" class="chips">
                     <div class="player_name">
                         <span class="name user_name">Player</span>: <span class="count count_player">1000</span>
                     </div>
@@ -67,15 +67,15 @@
                     <div class="table__main">
                         <div class="enemy__cards">
                             <div class="slot">
-                                <div class="card card__left card__hidden_1" data-player data-card="comp">
-                                    <div class="card__container">
+                                <div class="card card__left card__reverse card__hidden_1" data-player data-card="comp">
+                                    <div class="card__container hidden">
                                         <div class="digit__left">5</div>
                                         <img src="img/cards/diamonds.png" alt="diamonds">
                                         <div class="digit__right">6</div>
                                     </div>
                                 </div>
-                                <div class="card card__right card__hidden_2" data-player data-card="comp">
-                                    <div class="card__container">
+                                <div class="card card__right card__reverse card__hidden_2" data-player data-card="comp">
+                                    <div class="card__container hidden">
                                         <div class="digit__left">A</div>
                                         <img src="img/cards/diamonds.png" alt="diamonds">
                                         <div class="digit__right">6</div>
@@ -144,9 +144,7 @@
                 </div>
                 <div class="control__buttons">                    
                     <div class="wrapper__btn">
-                        <div class="start__btn">
-                            <button class="user-btn start-btn highlight" disabled>start</button>
-                        </div>
+                        <button class="user-btn start-btn highlight" disabled>start</button>
                     </div>
                     <div class="buttons__wrapper">
                         <div class="buttons__holder">                            
@@ -203,12 +201,8 @@
             <div class="hints highlight">
                 <h3 class="hint__title">Information</h3>
                 <h5 class="hint__subtitle">Lorem</h5>
-                <p class="hint__text">
-                    Lorem ipsum!
-                </p>
-                <p class="hint__additional">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Velit, reprehenderit!
-                </p>
+                <p class="hint__text">Lorem ipsum!</p>
+                <p class="hint__additional">Click "START" to start the hand.</p>
                 <img src="img/emoji/emoji0.png" alt="head" class="hint-img">
             </div>
         </div>
